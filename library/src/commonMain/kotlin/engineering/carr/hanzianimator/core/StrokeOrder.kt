@@ -92,7 +92,15 @@ public data class StrokeOrder(
             val obj = runCatching {
                 Json.parseToJsonElement(hanziWriterJson) as? JsonObject
             }.getOrNull() ?: return null
+            return fromJsonObject(character, obj)
+        }
 
+        /**
+         * Builds a [StrokeOrder] from an already-parsed Hanzi Writer entry.
+         * Used by the bundled provider, which parses a whole shard once and
+         * indexes into it, avoiding a re-serialize/re-parse per character.
+         */
+        internal fun fromJsonObject(character: String, obj: JsonObject): StrokeOrder? {
             val strokePathData = (obj["strokes"] as? JsonArray)
                 ?.mapNotNull { it.jsonPrimitive.contentOrNull }
                 ?.takeIf { it.isNotEmpty() }
