@@ -91,7 +91,7 @@ mavenPublishing {
         name.set("shenzhen-hanzi-animator")
         description.set("Kotlin Multiplatform library that animates hanzi stroke order and quizzes drawing, for Compose Multiplatform.")
         inceptionYear.set("2026")
-        url.set("https://github.com/marcuscarr/shenzhen-hanzi-animator")
+        url.set("https://github.com/OWNER/shenzhen-hanzi-animator")
         licenses {
             license {
                 name.set("MIT License")
@@ -101,15 +101,15 @@ mavenPublishing {
         }
         developers {
             developer {
-                id.set("marcuscarr")
+                id.set("OWNER")
                 name.set("Marcus Carr")
-                url.set("https://github.com/marcuscarr")
+                url.set("https://github.com/OWNER")
             }
         }
         scm {
-            url.set("https://github.com/marcuscarr/shenzhen-hanzi-animator")
-            connection.set("scm:git:git://github.com/marcuscarr/shenzhen-hanzi-animator.git")
-            developerConnection.set("scm:git:ssh://git@github.com/marcuscarr/shenzhen-hanzi-animator.git")
+            url.set("https://github.com/OWNER/shenzhen-hanzi-animator")
+            connection.set("scm:git:git://github.com/OWNER/shenzhen-hanzi-animator.git")
+            developerConnection.set("scm:git:ssh://git@github.com/OWNER/shenzhen-hanzi-animator.git")
         }
     }
 }
