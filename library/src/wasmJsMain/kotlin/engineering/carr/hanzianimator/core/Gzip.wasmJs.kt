@@ -1,3 +1,5 @@
+@file:OptIn(kotlin.js.ExperimentalWasmJsInterop::class)
+
 package engineering.carr.hanzianimator.core
 
 import kotlinx.coroutines.await

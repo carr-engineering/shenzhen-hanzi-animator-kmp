@@ -87,6 +87,12 @@ public class BundledStrokeOrderProvider(
 
         /** Default number of decoded shards kept in memory. */
         public const val DEFAULT_SHARD_CACHE_SIZE: Int = 8
+
+        /**
+         * A process-wide shared instance with a stable identity, suitable as a
+         * default in composables (its cache is shared across all callers).
+         */
+        public val Default: BundledStrokeOrderProvider by lazy { BundledStrokeOrderProvider() }
     }
 }
 
