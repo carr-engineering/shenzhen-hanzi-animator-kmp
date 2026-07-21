@@ -32,6 +32,10 @@ kotlin {
     }
 }
 
+compose.resources {
+    packageOfResClass = "engineering.carr.hanzianimator.sample.resources"
+}
+
 compose.desktop {
     application {
         mainClass = "engineering.carr.hanzianimator.sample.MainKt"
