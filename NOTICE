@@ -1,0 +1,49 @@
+shenzhen-hanzi-animator
+Copyright (c) 2026 Marcus Carr
+
+This product is licensed under the MIT License (see LICENSE).
+
+It bundles and builds upon third-party data and draws on the design
+conventions of related open-source projects, acknowledged below.
+
+--------------------------------------------------------------------------------
+Bundled stroke data
+--------------------------------------------------------------------------------
+
+Hanzi stroke outlines, stroke order, and medians are packaged from the
+hanzi-writer-data project. The underlying glyph data derives from Make Me a
+Hanzi, which is in turn derived from the Arphic PL fonts.
+
+  Hanzi Writer               MIT License
+  https://hanziwriter.org/
+  https://github.com/chanind/hanzi-writer
+
+  hanzi-writer-data          MIT License (project) /
+                             Arphic Public License (underlying glyph data)
+  https://github.com/chanind/hanzi-writer-data
+
+  Make Me a Hanzi            Arphic Public License / LGPL-3.0
+  https://github.com/skishore/makemeahanzi
+
+The exact upstream commit the bundled shards were generated from is recorded
+in tools/DATA_PROVENANCE.md.
+
+--------------------------------------------------------------------------------
+Design and implementation references
+--------------------------------------------------------------------------------
+
+The clipped stroke-reveal animation and guided-quiz conventions follow those
+established by Hanzi Writer (above). The Flutter package stroke_order_animator
+was an additional conceptual reference for the animation controller API; no
+code was copied from it.
+
+  stroke_order_animator      BSD-3-Clause License
+  https://pub.dev/packages/stroke_order_animator
+
+--------------------------------------------------------------------------------
+Sample application
+--------------------------------------------------------------------------------
+
+The :sample module bundles a subset of the Noto Sans SC font, distributed
+under the SIL Open Font License 1.1. See sample/.../FONT-NOTICE.md for details.
+The sample module is not part of the published library artifact.
