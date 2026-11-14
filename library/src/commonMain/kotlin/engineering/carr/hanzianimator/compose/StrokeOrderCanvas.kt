@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Path
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.input.pointer.pointerInput
 import engineering.carr.hanzianimator.core.GlyphPoint
 import engineering.carr.hanzianimator.core.StrokeRecognitionResult
+import engineering.carr.hanzianimator.core.StrokeRecognitionStatus
 import engineering.carr.hanzianimator.core.StrokeViewportTransform
 import kotlinx.coroutines.delay
 
@@ -43,24 +45,26 @@ public fun StrokeOrderCanvas(
     onStrokeResult: (StrokeRecognitionResult) -> Unit = {},
     onQuizComplete: (QuizSummary) -> Unit = {}
 ) {
+    val currentOnStrokeResult by rememberUpdatedState(onStrokeResult)
+    val currentOnQuizComplete by rememberUpdatedState(onQuizComplete)
     val order = controller.strokeOrder
     val geometry = remember(order, style.medianStartExtension) {
         StrokeGlyphGeometry.from(order, style.medianStartExtension)
     }
 
     // Reusable scratch paths (active reveal, hint reveal) and the live user trace.
-    val activeScratch = remember(order) { Path() }
-    val hintScratch = remember(order) { Path() }
-    val tracePath = remember(order) { Path() }
-    val tracePoints = remember(order) { mutableListOf<GlyphPoint>() }
-    var traceRevision by remember(order) { mutableIntStateOf(0) }
+    val activeScratch = remember(controller, order) { Path() }
+    val hintScratch = remember(controller, order) { Path() }
+    val tracePath = remember(controller, order) { Path() }
+    val tracePoints = remember(controller, order) { mutableListOf<GlyphPoint>() }
+    var traceRevision by remember(controller, order) { mutableIntStateOf(0) }
 
-    var failedTrace by remember(order) { mutableStateOf<List<GlyphPoint>>(emptyList()) }
-    var failureKey by remember(order) { mutableIntStateOf(0) }
-    val hintProgress = remember(order) { Animatable(0f) }
-    val completionPulse = remember(order) { Animatable(0f) }
+    var failedTrace by remember(controller, order) { mutableStateOf<List<GlyphPoint>>(emptyList()) }
+    var failureKey by remember(controller, order) { mutableIntStateOf(0) }
+    val hintProgress = remember(controller, order) { Animatable(0f) }
+    val completionPulse = remember(controller, order) { Animatable(0f) }
 
-    LaunchedEffect(order, controller.hintVisible, controller.currentStroke) {
+    LaunchedEffect(controller, order, controller.mode, controller.hintVisible, controller.currentStroke, style.hintRevealDurationMillis) {
         if (controller.mode == StrokeOrderMode.Quiz && controller.hintVisible && !controller.isQuizComplete) {
             hintProgress.snapTo(0f)
             hintProgress.animateTo(1f, tween(style.hintRevealDurationMillis, easing = FastOutSlowInEasing))
@@ -68,13 +72,13 @@ public fun StrokeOrderCanvas(
             hintProgress.snapTo(0f)
         }
     }
-    LaunchedEffect(order, failureKey) {
+    LaunchedEffect(controller, order, failureKey, style.failureFlashDurationMillis) {
         if (failureKey > 0) {
             delay(style.failureFlashDurationMillis.toLong())
             failedTrace = emptyList()
         }
     }
-    LaunchedEffect(order, controller.isQuizComplete) {
+    LaunchedEffect(controller, order, controller.isQuizComplete, style.completionPulseDurationMillis) {
         if (controller.isQuizComplete) {
             completionPulse.snapTo(1f)
             completionPulse.animateTo(0f, tween(style.completionPulseDurationMillis, easing = FastOutSlowInEasing))
@@ -88,41 +92,48 @@ public fun StrokeOrderCanvas(
         geometry.canPractice
 
     val inputModifier = if (quizActive) {
-        Modifier.pointerInput(order, controller.currentStroke) {
+        Modifier.pointerInput(controller, order, controller.currentStroke) {
             awaitEachGesture {
-                val down = awaitFirstDown(requireUnconsumed = false)
-                val viewport = StrokeViewportTransform(size.width.toFloat(), size.height.toFloat())
-                tracePoints.clear()
-                val start = viewport.canvasToGlyph(GlyphPoint(down.position.x, down.position.y), clamp = true)
-                tracePoints.add(start)
-                tracePath.reset()
-                tracePath.moveTo(start.x, start.y)
-                traceRevision++
-                down.consume()
-                while (true) {
-                    val event = awaitPointerEvent()
-                    val change = event.changes.firstOrNull { it.id == down.id } ?: break
-                    val point = viewport.canvasToGlyph(GlyphPoint(change.position.x, change.position.y), clamp = true)
-                    tracePoints.add(point)
-                    tracePath.lineTo(point.x, point.y)
+                try {
+                    val down = awaitFirstDown(requireUnconsumed = false)
+                    val viewport = StrokeViewportTransform(size.width.toFloat(), size.height.toFloat())
+                    tracePoints.clear()
+                    val start = viewport.canvasToGlyph(GlyphPoint(down.position.x, down.position.y), clamp = true)
+                    tracePoints.add(start)
+                    tracePath.reset()
+                    tracePath.moveTo(start.x, start.y)
                     traceRevision++
-                    change.consume()
-                    if (!change.pressed) {
-                        val points = tracePoints.toList()
-                        val wasComplete = controller.isQuizComplete
-                        val result = controller.submitStroke(points)
-                        onStrokeResult(result)
-                        if (!result.accepted) {
-                            failedTrace = points
-                            failureKey++
+                    down.consume()
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        val change = event.changes.firstOrNull { it.id == down.id } ?: break
+                        val point = viewport.canvasToGlyph(GlyphPoint(change.position.x, change.position.y), clamp = true)
+                        tracePoints.add(point)
+                        tracePath.lineTo(point.x, point.y)
+                        traceRevision++
+                        change.consume()
+                        if (!change.pressed) {
+                            val points = tracePoints.toList()
+                            val wasComplete = controller.isQuizComplete
+                            val result = controller.submitStroke(points)
+                            // Host callbacks may reset or replace the session. Preserve this result's summary.
+                            val completedSummary = if (!wasComplete && controller.isQuizComplete) controller.quizSummary() else null
+                            currentOnStrokeResult(result)
+                            if (!result.accepted && result.status != StrokeRecognitionStatus.EmptyInput) {
+                                failedTrace = points
+                                failureKey++
+                            }
+                            completedSummary?.let(currentOnQuizComplete)
+                            break
                         }
-                        if (!wasComplete && controller.isQuizComplete) {
-                            controller.quizSummary()?.let(onQuizComplete)
-                        }
+                    }
+                } finally {
+                    // Runs on normal completion and when the gesture is cancelled
+                    // mid-trace, so no partial trace lingers on the canvas.
+                    if (tracePoints.isNotEmpty()) {
                         tracePoints.clear()
                         tracePath.reset()
                         traceRevision++
-                        break
                     }
                 }
             }
@@ -146,7 +157,6 @@ public fun StrokeOrderCanvas(
         val hintVisible = controller.hintVisible
         val quizComplete = controller.isQuizComplete
         val currentStroke = controller.currentStroke
-        val completedColor = lerp(style.completedStrokeColor, style.traceColor, pulse)
 
         withGlyphTransform(viewport) {
             if (outlineVisible) {
@@ -159,7 +169,14 @@ public fun StrokeOrderCanvas(
                     entry.outlinePath?.let {
                         drawPath(
                             it,
-                            strokeFinalColor(entry.isRadical, completedColor, style.radicalStrokeColor),
+                            lerp(
+                                strokeFinalColor(
+                                    entry.isRadical, style.completedStrokeColor, style.radicalStrokeColor,
+                                    entry.componentIndex, style.componentColors, order.components != null
+                                ),
+                                style.traceColor,
+                                pulse
+                            ),
                             style = Fill
                         )
                     }
@@ -170,7 +187,10 @@ public fun StrokeOrderCanvas(
                     drawStrokeReveal(
                         entry = entry,
                         progress = reveal.progress,
-                        color = strokeFinalColor(entry.isRadical, style.activeStrokeColor, style.radicalStrokeColor),
+                        color = strokeFinalColor(
+                            entry.isRadical, style.activeStrokeColor, style.radicalStrokeColor,
+                            entry.componentIndex, style.componentColors, order.components != null
+                        ),
                         revealStrokeWidth = style.revealStrokeWidth,
                         scratch = activeScratch
                     )

@@ -1,16 +1,23 @@
 package engineering.carr.hanzianimator.compose
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.Role
 
 /**
- * A ready-made Material 3 control bar for a [StrokeOrderController]: play/pause,
+ * A Foundation control bar for a [StrokeOrderController]: play/pause,
  * step, reveal-all, reset, quiz toggle (with hint), and an outline toggle. The
  * buttons shown adapt to the controller's mode.
  *
@@ -21,60 +28,72 @@ import androidx.compose.ui.unit.dp
 @Composable
 public fun StrokeOrderControls(
     controller: StrokeOrderController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    layout: StrokeOrderLayoutConfig = StrokeOrderLayoutConfig(),
+    labels: StrokeOrderControlsLabels = StrokeOrderControlsLabels(),
+    style: StrokeOrderStyle = StrokeOrderDefaults.style()
 ) {
     val hasStrokes = controller.strokeOrder.strokeCount > 0
-    Row(
+    FlowRow(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
-        verticalAlignment = Alignment.CenterVertically
+        horizontalArrangement = Arrangement.spacedBy(layout.controlHorizontalGap),
+        verticalArrangement = Arrangement.spacedBy(layout.controlRowGap)
     ) {
         if (controller.mode == StrokeOrderMode.Quiz) {
-            IconButton(
+            ControlButton(layout.minimumControlSize,
                 enabled = !controller.isQuizComplete,
                 onClick = { controller.showHint() }
             ) {
-                Icon(HanziIcons.Lightbulb, contentDescription = "Show next stroke hint")
+                ControlIcon(style.completedStrokeColor, HanziIcons.Lightbulb, contentDescription = labels.hint)
             }
-            IconButton(onClick = { controller.startQuiz() }) {
-                Icon(HanziIcons.Replay, contentDescription = "Restart quiz")
+            ControlButton(layout.minimumControlSize, onClick = { controller.startQuiz() }) {
+                ControlIcon(style.completedStrokeColor, HanziIcons.Replay, contentDescription = labels.restart)
             }
-            IconButton(onClick = { controller.stopQuiz() }) {
-                Icon(HanziIcons.Close, contentDescription = "Exit quiz")
+            ControlButton(layout.minimumControlSize, onClick = { controller.stopQuiz() }) {
+                ControlIcon(style.completedStrokeColor, HanziIcons.Close, contentDescription = labels.exit)
             }
         } else {
-            IconButton(
+            ControlButton(layout.minimumControlSize,
                 enabled = hasStrokes,
                 onClick = { if (controller.isAnimating) controller.pause() else controller.play() }
             ) {
                 if (controller.isAnimating) {
-                    Icon(HanziIcons.Pause, contentDescription = "Pause")
+                    ControlIcon(style.completedStrokeColor, HanziIcons.Pause, contentDescription = labels.pause)
                 } else {
-                    Icon(HanziIcons.Play, contentDescription = "Play stroke order")
+                    ControlIcon(style.completedStrokeColor, HanziIcons.Play, contentDescription = labels.play)
                 }
             }
-            IconButton(enabled = hasStrokes, onClick = { controller.previousStroke() }) {
-                Icon(HanziIcons.SkipPrevious, contentDescription = "Previous stroke")
+            ControlButton(layout.minimumControlSize, enabled = hasStrokes, onClick = { controller.previousStroke() }) {
+                ControlIcon(style.completedStrokeColor, HanziIcons.SkipPrevious, contentDescription = labels.previous)
             }
-            IconButton(enabled = hasStrokes, onClick = { controller.nextStroke() }) {
-                Icon(HanziIcons.SkipNext, contentDescription = "Next stroke")
+            ControlButton(layout.minimumControlSize, enabled = hasStrokes, onClick = { controller.nextStroke() }) {
+                ControlIcon(style.completedStrokeColor, HanziIcons.SkipNext, contentDescription = labels.next)
             }
-            IconButton(enabled = hasStrokes, onClick = { controller.showFullCharacter() }) {
-                Icon(HanziIcons.Done, contentDescription = "Show full character")
+            ControlButton(layout.minimumControlSize, enabled = hasStrokes, onClick = { controller.showFullCharacter() }) {
+                ControlIcon(style.completedStrokeColor, HanziIcons.Done, contentDescription = labels.reveal)
             }
-            IconButton(enabled = hasStrokes, onClick = { controller.reset() }) {
-                Icon(HanziIcons.Replay, contentDescription = "Reset")
+            ControlButton(layout.minimumControlSize, enabled = hasStrokes, onClick = { controller.reset() }) {
+                ControlIcon(style.completedStrokeColor, HanziIcons.Replay, contentDescription = labels.reset)
             }
-            IconButton(enabled = hasStrokes, onClick = { controller.startQuiz() }) {
-                Icon(HanziIcons.Edit, contentDescription = "Start quiz")
+            ControlButton(layout.minimumControlSize, enabled = controller.strokeOrder.supportsPractice, onClick = { controller.startQuiz() }) {
+                ControlIcon(style.completedStrokeColor, HanziIcons.Edit, contentDescription = labels.quiz)
             }
         }
-        IconButton(onClick = { controller.outlineVisible = !controller.outlineVisible }) {
+        ControlButton(layout.minimumControlSize, onClick = { controller.outlineVisible = !controller.outlineVisible }) {
             if (controller.outlineVisible) {
-                Icon(HanziIcons.VisibilityOff, contentDescription = "Hide outline")
+                ControlIcon(style.completedStrokeColor, HanziIcons.VisibilityOff, contentDescription = labels.hideOutline)
             } else {
-                Icon(HanziIcons.Visibility, contentDescription = "Show outline")
+                ControlIcon(style.completedStrokeColor, HanziIcons.Visibility, contentDescription = labels.showOutline)
             }
         }
     }
+}
+
+@Composable
+private fun ControlButton(size: androidx.compose.ui.unit.Dp, enabled: Boolean = true, onClick: () -> Unit, content: @Composable () -> Unit) {
+    Box(Modifier.size(size).alpha(if (enabled) 1f else 0.38f).clickable(enabled = enabled, role = Role.Button, onClick = onClick), contentAlignment = Alignment.Center) { content() }
+}
+@Composable
+private fun ControlIcon(color: androidx.compose.ui.graphics.Color, image: ImageVector, contentDescription: String) {
+    Image(rememberVectorPainter(image), contentDescription, Modifier.size(24.dp), colorFilter = ColorFilter.tint(color))
 }

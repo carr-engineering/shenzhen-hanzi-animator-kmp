@@ -1,0 +1,13 @@
+{
+  "name": "@hanzi-animator/canvas",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "description": "Hanzi stroke animation and practice on browser Canvas using the shared Kotlin engine",
+  "license": "MIT",
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
+  "files": ["dist", "README.md", "LICENSE", "NOTICE"],
+  "scripts": { "build": "node scripts/build.mjs", "test": "node --test test/*.test.mjs", "demo": "node scripts/serve.mjs" },
+  "devDependencies": { "typescript": "5.9.3" },
+  "engines": { "node": ">=20" }
+}

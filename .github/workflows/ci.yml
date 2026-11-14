@@ -1,43 +1,142 @@
-name: CI
+name: Validate modules and consumers
 
 on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
-    # macOS so the iOS targets compile alongside everything else.
-    runs-on: macos-latest
+  jvm-android-publication:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
-
-      - name: Set up Chrome
-        uses: browser-actions/setup-chrome@v1
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Run library tests (all targets)
-        run: ./gradlew :library:allTests --stacktrace
-
-      - name: Verify publishing (Maven local)
-        run: ./gradlew :library:publishToMavenLocal --stacktrace
-
-      - name: Build sample web distribution
-        run: ./gradlew :sample:wasmJsBrowserDistribution --stacktrace
-
-      - name: Upload test reports
-        if: always()
-        uses: actions/upload-artifact@v4
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Install Android SDK 36
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: actions/setup-python@v5
         with:
-          name: test-reports
-          path: "**/build/reports/tests/**"
-          if-no-files-found: ignore
+          python-version: '3.14'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Bundled stroke packs from the pinned source corpus
+        run: tools/prepare_bundled_data.sh
+      - name: Generator validation and full corpus parity
+        run: python3 -m unittest discover -s tools -p 'test_*.py'
+      - name: JVM tests for every published module
+        run: >-
+          ./gradlew :core:jvmTest :codec:jvmTest :json:jvmTest :data:jvmTest
+          :bundled-data:jvmTest :library:jvmTest :material3:jvmTest --stacktrace
+      - name: Android release APK with AGP application plugin
+        run: ./gradlew :androidApp:assembleRelease --stacktrace
+      - name: Published artifacts consumed by an isolated build
+        env:
+          PUBLICATION_REPOSITORY_URL: https://github.com/${{ github.repository }}
+        run: ./integration-smoke/run.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: jvm-android-consumer-evidence
+          path: |
+            **/build/reports/tests/**
+            integration-smoke/**/build/reports/runtime-dependencies.txt
+            androidApp/build/outputs/apk/release/*.apk
+          if-no-files-found: warn
+
+  ios:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Bundled stroke packs from the pinned source corpus
+        run: tools/prepare_bundled_data.sh
+      - name: Headless and bundled system-codec simulator tests
+        run: >-
+          ./gradlew :core:iosSimulatorArm64Test :codec:iosSimulatorArm64Test
+          :json:iosSimulatorArm64Test :data:iosSimulatorArm64Test
+          :bundled-data:iosSimulatorArm64Test --stacktrace
+      - name: Compile Compose simulator tests and sample framework
+        run: >-
+          ./gradlew :library:compileTestKotlinIosSimulatorArm64
+          :material3:compileTestKotlinIosSimulatorArm64
+          :sample:linkDebugFrameworkIosSimulatorArm64 --stacktrace
+      - name: Build SwiftUI host with embedded framework and bundle data
+        run: >-
+          xcodebuild -project iosApp/HanziAnimatorExample.xcodeproj
+          -scheme HanziAnimatorExample -configuration Debug
+          -sdk iphonesimulator -destination 'generic/platform=iOS Simulator'
+          -derivedDataPath iosApp/build/DerivedData CODE_SIGNING_ALLOWED=NO build
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-evidence
+          path: |
+            **/build/reports/tests/**
+            sample/build/bin/iosSimulatorArm64/debugFramework/**
+            iosApp/build/DerivedData/Build/Products/Debug-iphonesimulator/*.app/**
+          if-no-files-found: warn
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: browser/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Bundled stroke packs from the pinned source corpus
+        run: tools/prepare_bundled_data.sh
+      - name: Compose Wasm and standalone ES module distributions
+        run: >-
+          ./gradlew :sample:wasmJsBrowserDistribution
+          :browser-engine:jsBrowserProductionLibraryDistribution
+          :browser-engine:jsNodeTest --stacktrace
+      - name: Canvas declarations, size budget and tests
+        working-directory: browser
+        run: |
+          npm ci
+          npm run build
+          npm test
+          npm pack --dry-run
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-evidence
+          path: |
+            browser/dist/**
+            browser/demo/**
+            sample/build/dist/wasmJs/productionExecutable/**
+            **/build/reports/tests/**
+          if-no-files-found: warn

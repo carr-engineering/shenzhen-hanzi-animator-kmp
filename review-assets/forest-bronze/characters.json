@@ -1,0 +1,69 @@
+[
+  {
+    "character": "林",
+    "components": [
+      "木",
+      "木"
+    ],
+    "unmappedStrokeNumbers": []
+  },
+  {
+    "character": "森",
+    "components": [
+      "木",
+      "木",
+      "木"
+    ],
+    "unmappedStrokeNumbers": []
+  },
+  {
+    "character": "器",
+    "components": [
+      "口",
+      "口",
+      "犬",
+      "口",
+      "口"
+    ],
+    "unmappedStrokeNumbers": []
+  },
+  {
+    "character": "聽",
+    "components": [
+      "耳",
+      "王",
+      "十",
+      "罒",
+      "一",
+      "心"
+    ],
+    "unmappedStrokeNumbers": []
+  },
+  {
+    "character": "赢",
+    "components": [
+      "吂",
+      "⺼",
+      "贝"
+    ],
+    "unmappedStrokeNumbers": [
+      15,
+      16,
+      17
+    ]
+  },
+  {
+    "character": "斷",
+    "components": [
+      "幺",
+      "幺",
+      "一",
+      "幺",
+      "幺",
+      "斤"
+    ],
+    "unmappedStrokeNumbers": [
+      14
+    ]
+  }
+]

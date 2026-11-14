@@ -1,0 +1,95 @@
+{
+  "sourceSha256": "d6db1e36007c41b2d68132975bfc132a64f50b9ceae4254730918ba8ea3d5ced",
+  "characters": 9574,
+  "python": "3.14.7",
+  "node": "v22.19.0",
+  "results": [
+    {
+      "format": "canonical-json",
+      "codec": "gzip9",
+      "rawBytes": 31574194,
+      "encodedBytes": 12511329,
+      "encodeMs": 2370.7240829244256,
+      "decodeMs": 36.896416218951344
+    },
+    {
+      "format": "canonical-json",
+      "codec": "xz-lzma9",
+      "rawBytes": 31574194,
+      "encodedBytes": 8995500,
+      "encodeMs": 18547.07279196009,
+      "decodeMs": 402.6127499528229
+    },
+    {
+      "format": "canonical-json",
+      "codec": "brotli9",
+      "rawBytes": 31574194,
+      "encodedBytes": 11255077,
+      "encodeMs": 3539.8624170000003,
+      "decodeMs": 63.443333000000166
+    },
+    {
+      "format": "canonical-json",
+      "codec": "brotli11",
+      "rawBytes": 31574194,
+      "encodedBytes": 9540467,
+      "encodeMs": 42226.11612499999,
+      "decodeMs": 119.7905000000028
+    },
+    {
+      "format": "indexed-binary-hzb1",
+      "codec": "gzip9",
+      "rawBytes": 8672382,
+      "encodedBytes": 6865840,
+      "encodeMs": 249.03904204256833,
+      "decodeMs": 21.015375154092908
+    },
+    {
+      "format": "indexed-binary-hzb1",
+      "codec": "xz-lzma9",
+      "rawBytes": 8672382,
+      "encodedBytes": 5631744,
+      "encodeMs": 2309.804790886119,
+      "decodeMs": 211.68337506242096
+    },
+    {
+      "format": "indexed-binary-hzb1",
+      "codec": "brotli9",
+      "rawBytes": 8672382,
+      "encodedBytes": 6109263,
+      "encodeMs": 2182.680167,
+      "decodeMs": 42.72766599999977
+    },
+    {
+      "format": "indexed-binary-hzb1",
+      "codec": "brotli11",
+      "rawBytes": 8672382,
+      "encodedBytes": 5825784,
+      "encodeMs": 16474.684833,
+      "decodeMs": 83.4385000000002
+    },
+    {
+      "format": "indexed-binary-hzb1",
+      "codec": "zstd19",
+      "rawBytes": 8672382,
+      "encodedBytes": 5978328,
+      "encodeMs": 2006.4259169157594,
+      "decodeMs": 64.78370795957744
+    },
+    {
+      "format": "indexed-binary-hzb1",
+      "codec": "zstd22",
+      "rawBytes": 8672382,
+      "encodedBytes": 5978259,
+      "encodeMs": 2076.8085829913616,
+      "decodeMs": 20.084167132154107
+    }
+  ],
+  "unavailable": [],
+  "caveats": [
+    "Timings are host observations, not mobile/web latency.",
+    "XZ is not Apple Compression LZMA framing; use generator --ios-codec apple-lzma for that profile.",
+    "Zstandard/XZ on other platforms may require additional runtime decoders; codec bytes alone do not determine app size.",
+    "Monolithic JSON differs from the old 256-shard package; this isolates representation and delivery codec."
+  ]
+}

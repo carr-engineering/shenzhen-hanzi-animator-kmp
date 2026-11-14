@@ -1,0 +1,182 @@
+{
+  "measured_at_utc": "2026-10-12T14:41:31.242902+00:00",
+  "repository_root": "/Users/marc/Documents/code/shenzhen_hanzi_animator_kmp",
+  "python_version": "3.14.7",
+  "unit": "bytes",
+  "measurement_methods": {
+    "files": "Path.stat().st_size; SHA-256 of entire artifact when recorded",
+    "apk_categories": "zipfile.ZipFile.infolist(); sum file_size and compress_size per category; ZIP headers, signatures and alignment remain in container_overhead_bytes",
+    "gzip_estimate": "gzip.compress(file_bytes, compresslevel=9, mtime=0), Python standard library; per file then summed",
+    "brotli_estimate": "Node.js zlib.brotliCompressSync(file_bytes, BROTLI_PARAM_QUALITY=9); per file then summed",
+    "limitations": [
+      "APK file size is not Play device-specific download size. ZIP uncompressed sum is not actual installed app size.",
+      "Web compression estimates do not assert that a hosting service currently sends those encodings.",
+      "Web startup selection includes JS, app/Skiko Wasm, font and HTML/CSS plus the initial character shard; excludes source map and unused shards.",
+      "Built APK used temporary compatibility flags -Pandroid.builtInKotlin=false -Pandroid.newDsl=false; release minification is disabled."
+    ]
+  },
+  "android_apk": {
+    "path": "/Users/marc/Documents/code/shenzhen_hanzi_animator_kmp/sample/build/outputs/apk/release/sample-release.apk",
+    "file_size_bytes": 23972773,
+    "sha256": "7df930b139738ee805f00db48e659913c720687b54a2c1a9d13c03fd51ab8bfc",
+    "categories": {
+      "metadata": {
+        "file_count": 69,
+        "zip_uncompressed_bytes": 51611,
+        "zip_compressed_payload_bytes": 18529
+      },
+      "baseline_profiles": {
+        "file_count": 2,
+        "zip_uncompressed_bytes": 11107,
+        "zip_compressed_payload_bytes": 11107
+      },
+      "dex": {
+        "file_count": 2,
+        "zip_uncompressed_bytes": 24155488,
+        "zip_compressed_payload_bytes": 8323221
+      },
+      "native_libraries": {
+        "file_count": 4,
+        "zip_uncompressed_bytes": 37392,
+        "zip_compressed_payload_bytes": 37392
+      },
+      "stroke_data_and_index": {
+        "file_count": 257,
+        "zip_uncompressed_bytes": 30911056,
+        "zip_compressed_payload_bytes": 12895870
+      },
+      "other": {
+        "file_count": 12,
+        "zip_uncompressed_bytes": 63078,
+        "zip_compressed_payload_bytes": 15664
+      },
+      "fonts": {
+        "file_count": 1,
+        "zip_uncompressed_bytes": 3297592,
+        "zip_compressed_payload_bytes": 2049002
+      },
+      "android_resources": {
+        "file_count": 39,
+        "zip_uncompressed_bytes": 508907,
+        "zip_compressed_payload_bytes": 498590
+      }
+    },
+    "zip_uncompressed_total_bytes": 59036231,
+    "zip_compressed_payload_total_bytes": 23849375,
+    "container_overhead_bytes": 123398
+  },
+  "android_packaging_finding": {
+    "severity": "P1",
+    "expected_shard_asset": "assets/composeResources/engineering.carr.hanzianimator.internal.resources/files/strokes/0.json.gz",
+    "expected_shard_present": false,
+    "actual_shard_asset": "assets/composeResources/engineering.carr.hanzianimator.internal.resources/files/strokes/0.json",
+    "actual_first_16_bytes_hex": "7b22e4a080223a7b227374726f6b6573",
+    "actual_is_gzip": false,
+    "actual_equals_gunzipped_source": true,
+    "expected_index_asset": "assets/composeResources/engineering.carr.hanzianimator.internal.resources/files/strokes/index.txt.gz",
+    "expected_index_present": false,
+    "actual_index_asset": "assets/composeResources/engineering.carr.hanzianimator.internal.resources/files/strokes/index.txt",
+    "stroke_assets_count": 257,
+    "gzip_stroke_assets_count": 0,
+    "merged_asset_path": "/Users/marc/Documents/code/shenzhen_hanzi_animator_kmp/sample/build/intermediates/assets/release/mergeReleaseAssets/composeResources/engineering.carr.hanzianimator.internal.resources/files/strokes/0.json",
+    "provider_source": "/Users/marc/Documents/code/shenzhen_hanzi_animator_kmp/library/src/commonMain/kotlin/engineering/carr/hanzianimator/data/BundledStrokeOrderProvider.kt",
+    "provider_shard_read_line": 59,
+    "provider_index_read_line": 72,
+    "generated_resource_reader": "/Users/marc/Documents/code/shenzhen_hanzi_animator_kmp/library/build/generated/compose/resourceGenerator/kotlin/commonResClass/engineering/carr/hanzianimator/internal/resources/Res.kt",
+    "generated_reader_line": 26,
+    "compose_android_reader_evidence": "javap -p -c org.jetbrains.compose.resources.DefaultAndroidResourceReader from components-resources-android 1.11.1 classes.jar: read delegates to getResourceAsStream(path), open delegates directly to AssetManager.open(path); fallbacks preserve the same path.",
+    "runtime_execution_performed": false
+  },
+  "committed_dataset": {
+    "shard_count": 256,
+    "compressed_shards_bytes": 12830534,
+    "compressed_index_bytes": 19840,
+    "decoded_shards_bytes": 30882334,
+    "shard_compressed_min_bytes": 32183,
+    "shard_compressed_median_bytes": 49331.5,
+    "shard_compressed_max_bytes": 73680,
+    "character_count": 9574
+  },
+  "web_distribution": {
+    "path": "/Users/marc/Documents/code/shenzhen_hanzi_animator_kmp/sample/build/dist/wasmJs/productionExecutable",
+    "file_count": 266,
+    "total_raw_bytes": 30491115,
+    "key_files": [
+      {
+        "relative_path": "30c62f6186483b7d4f8d.wasm",
+        "role": "application_wasm",
+        "raw_bytes": 3619568,
+        "gzip9_estimate_bytes": 1094072,
+        "sha256": "7edd451c97c2cbe53fe6c700038ccfddf3e2c6c6c2fd71530166dcd8f9c50736",
+        "brotli9_estimate_bytes": 941227
+      },
+      {
+        "relative_path": "index.html",
+        "role": "static_document",
+        "raw_bytes": 937,
+        "gzip9_estimate_bytes": 504,
+        "sha256": "14829b7db705ab7c2ffdf72e85e770d656763abe4e6a3546c399fc7d653c36a8",
+        "brotli9_estimate_bytes": 392
+      },
+      {
+        "relative_path": "styles.css",
+        "role": "static_document",
+        "raw_bytes": 102,
+        "gzip9_estimate_bytes": 96,
+        "sha256": "adeed4cf2e4f76faf945f1f0adf8a05fce135eb43b383a06ee336aa936ff9e5c",
+        "brotli9_estimate_bytes": 65
+      },
+      {
+        "relative_path": "sample.js.map",
+        "role": "source_map",
+        "raw_bytes": 1533127,
+        "gzip9_estimate_bytes": 275803,
+        "sha256": "28b7e7fbf736b29fe820e7c8663a3e040d8f4c7409f6678719fc08517de50a0e",
+        "brotli9_estimate_bytes": 248132
+      },
+      {
+        "relative_path": "6e23e5428398b92da386.wasm",
+        "role": "skiko_runtime",
+        "raw_bytes": 8652729,
+        "gzip9_estimate_bytes": 3319858,
+        "sha256": "46caff5f783599bd1c5d3e5e87959d7cb5102c515aac671c9280664368e71dab",
+        "brotli9_estimate_bytes": 2983515
+      },
+      {
+        "relative_path": "sample.js.LICENSE.txt",
+        "role": "static_document",
+        "raw_bytes": 1298,
+        "gzip9_estimate_bytes": 281,
+        "sha256": "85a703daf937b69e6a45c75947dcea43f4026a835b84a7ea4300843217311baf",
+        "brotli9_estimate_bytes": 252
+      },
+      {
+        "relative_path": "sample.js",
+        "role": "application_js",
+        "raw_bytes": 534645,
+        "gzip9_estimate_bytes": 100302,
+        "sha256": "6c961d20dbc69fc54a6a936071839f845d31039094cfa3493bad604453188875",
+        "brotli9_estimate_bytes": 88690
+      },
+      {
+        "relative_path": "composeResources/engineering.carr.hanzianimator.sample.resources/font/noto_sans_sc_subset.ttf",
+        "role": "font",
+        "raw_bytes": 3297592,
+        "gzip9_estimate_bytes": 2044362,
+        "sha256": "5c6a89a348f32d32108f51b1a534531c438bd198ea95290cc8aac82cea575e74",
+        "brotli9_estimate_bytes": 1805090
+      }
+    ],
+    "startup_assets_raw_bytes": 16104534,
+    "startup_assets_gzip9_estimate_bytes": 6558594,
+    "initial_character": "你",
+    "initial_character_shard": "composeResources/engineering.carr.hanzianimator.internal.resources/files/strokes/96.json.gz",
+    "initial_character_shard_bytes": 43898,
+    "initial_character_shard_characters": 31,
+    "html_and_css_bytes": 1039,
+    "startup_assets_brotli9_estimate_bytes": 5818522
+  },
+  "node_version": "v22.19.0",
+  "node_zlib_version": "1.3.1-470d3a2",
+  "node_brotli_version": "1.1.0"
+}

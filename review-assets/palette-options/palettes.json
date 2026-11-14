@@ -1,0 +1,65 @@
+[
+  {
+    "id": "A",
+    "name": "Slate & ink",
+    "description": "Cool, restrained, almost neutral",
+    "light": [
+      "#30383F",
+      "#566775",
+      "#7B8D99",
+      "#3E526A",
+      "#536B67",
+      "#8A8174"
+    ],
+    "dark": [
+      "#D0D4D8",
+      "#A3B3C1",
+      "#7D95AA",
+      "#BDC4CC",
+      "#98B4AA",
+      "#C0B09A"
+    ]
+  },
+  {
+    "id": "B",
+    "name": "Forest & bronze",
+    "description": "Earthy greens with warm bronze",
+    "light": [
+      "#323E38",
+      "#566D5C",
+      "#839078",
+      "#907347",
+      "#625B46",
+      "#A38B6A"
+    ],
+    "dark": [
+      "#D4D8CD",
+      "#A4BEA4",
+      "#7F9D85",
+      "#CFAD77",
+      "#ABA68B",
+      "#BA9A73"
+    ]
+  },
+  {
+    "id": "C",
+    "name": "Plum & clay",
+    "description": "Soft plum, stone and muted clay",
+    "light": [
+      "#3E343B",
+      "#6B5366",
+      "#9A7B8B",
+      "#936855",
+      "#726A63",
+      "#AD9483"
+    ],
+    "dark": [
+      "#D4CDD2",
+      "#B89AAD",
+      "#96778D",
+      "#D3A58D",
+      "#AEA6A0",
+      "#C4AE9C"
+    ]
+  }
+]

@@ -3,6 +3,7 @@ package engineering.carr.hanzianimator.sample
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,18 +23,19 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import engineering.carr.hanzianimator.data.BundledStrokeOrderProvider
-import engineering.carr.hanzianimator.sample.resources.Res
-import engineering.carr.hanzianimator.sample.resources.noto_sans_sc_subset
 import engineering.carr.hanzianimator.sample.theme.InkTheme
 import engineering.carr.hanzianimator.sample.theme.ThemeMode
-import org.jetbrains.compose.resources.Font
+import engineering.carr.hanzianimator.data.StrokeDataSource
+import engineering.carr.hanzianimator.data.platformBundledDataSource
 
 /** Root of the sample: ink theme, bundled CJK font, and the animate/practice screen. */
 @Composable
-fun SampleApp() {
+fun SampleApp(dataSource: StrokeDataSource? = null) {
     var themeMode by remember { mutableStateOf(ThemeMode.System) }
-    val fontFamily = FontFamily(Font(Res.font.noto_sans_sc_subset))
-    val provider = remember { BundledStrokeOrderProvider.Default }
+    val fontFamily = sampleFontFamily()
+    val scope = rememberCoroutineScope()
+    val source = remember(dataSource) { dataSource ?: platformBundledDataSource() }
+    val provider = remember(scope, source) { BundledStrokeOrderProvider(scope = scope, source = source) }
 
     InkTheme(themeMode = themeMode, fontFamily = fontFamily) {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
@@ -46,13 +49,15 @@ fun SampleApp() {
 
 @Composable
 private fun TopBar(themeMode: ThemeMode, onCycleTheme: () -> Unit) {
+    BoxWithConstraints {
+    val title = if (maxWidth < 480.dp) "Hanzi animator" else "shenzhen-hanzi-animator"
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "shenzhen-hanzi-animator",
+                text = title,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.primary
@@ -67,6 +72,7 @@ private fun TopBar(themeMode: ThemeMode, onCycleTheme: () -> Unit) {
             Text("Theme: ${themeMode.label}")
         }
     }
+}
 }
 
 private val ThemeMode.label: String

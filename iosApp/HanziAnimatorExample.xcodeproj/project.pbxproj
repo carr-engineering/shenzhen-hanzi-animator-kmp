@@ -1,0 +1,52 @@
+// !$*UTF8*$!
+{
+ archiveVersion = 1;
+ classes = {};
+ objectVersion = 56;
+ objects = {
+  A10000000000000000000001 /* App source */ = {isa = PBXBuildFile; fileRef = A10000000000000000000002; };
+  A10000000000000000000002 /* App source */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HanziAnimatorExampleApp.swift; sourceTree = "<group>"; };
+  A10000000000000000000003 /* App */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HanziAnimatorExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+  A10000000000000000000004 /* Root */ = {isa = PBXGroup; children = (A10000000000000000000005, A10000000000000000000006); sourceTree = "<group>"; };
+  A10000000000000000000005 /* Source group */ = {isa = PBXGroup; children = (A10000000000000000000002); path = HanziAnimatorExample; sourceTree = "<group>"; };
+  A10000000000000000000006 /* Products */ = {isa = PBXGroup; children = (A10000000000000000000003); name = Products; sourceTree = "<group>"; };
+  A10000000000000000000007 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000001); runOnlyForDeploymentPostprocessing = 0; };
+  A10000000000000000000008 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+  A10000000000000000000009 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+  A10000000000000000000010 /* Kotlin framework */ = {
+   isa = PBXShellScriptBuildPhase; alwaysOutOfDate = 1; buildActionMask = 2147483647; files = (); inputPaths = (); name = "Build Kotlin framework"; outputPaths = (); runOnlyForDeploymentPostprocessing = 0; shellPath = /bin/sh;
+   shellScript = "set -eu\nif [ \"${OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED:-NO}\" = \"YES\" ]; then exit 0; fi\ncd \"$SRCROOT/..\"\n./gradlew :sample:embedAndSignAppleFrameworkForXcode --console=plain\n";
+  };
+  A10000000000000000000011 /* Stroke resources */ = {
+   isa = PBXShellScriptBuildPhase; alwaysOutOfDate = 1; buildActionMask = 2147483647; files = (); inputPaths = (); name = "Copy stroke data and licenses"; outputPaths = (); runOnlyForDeploymentPostprocessing = 0; shellPath = /bin/sh;
+   shellScript = "set -eu\nresource_root=\"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH\"\nmkdir -p \"$resource_root/strokes\" \"$resource_root/licenses\"\nrsync -a --delete \"$SRCROOT/../bundled-data/src/iosMain/resources/strokes/\" \"$resource_root/strokes/\"\nrsync -a --delete \"$SRCROOT/../bundled-data/src/commonMain/resources/licenses/\" \"$resource_root/licenses/\"\ntest -s \"$resource_root/strokes/all.hzb\"\ntest -s \"$resource_root/licenses/Arphic-Public-License.txt\"\n";
+  };
+  A10000000000000000000012 /* Target */ = {isa = PBXNativeTarget; buildConfigurationList = A10000000000000000000015; buildPhases = (A10000000000000000000010, A10000000000000000000007, A10000000000000000000008, A10000000000000000000009, A10000000000000000000011); buildRules = (); dependencies = (); name = HanziAnimatorExample; productName = HanziAnimatorExample; productReference = A10000000000000000000003; productType = "com.apple.product-type.application"; };
+  A10000000000000000000013 /* Project */ = {isa = PBXProject; attributes = {BuildIndependentTargetsInParallel = YES; LastSwiftUpdateCheck = 2600; LastUpgradeCheck = 2600; TargetAttributes = {A10000000000000000000012 = {CreatedOnToolsVersion = 26.0; }; }; }; buildConfigurationList = A10000000000000000000014; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base); mainGroup = A10000000000000000000004; productRefGroup = A10000000000000000000006; projectDirPath = ""; projectRoot = ""; targets = (A10000000000000000000012); };
+  A10000000000000000000014 = {isa = XCConfigurationList; buildConfigurations = (A10000000000000000000016, A10000000000000000000017); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+  A10000000000000000000015 = {isa = XCConfigurationList; buildConfigurations = (A10000000000000000000018, A10000000000000000000019); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+  A10000000000000000000016 /* Project Debug */ = {isa = XCBuildConfiguration; buildSettings = {CLANG_ENABLE_MODULES = YES; IPHONEOS_DEPLOYMENT_TARGET = 15.0; SDKROOT = iphoneos; SWIFT_VERSION = 5.0; }; name = Debug; };
+  A10000000000000000000017 /* Project Release */ = {isa = XCBuildConfiguration; buildSettings = {CLANG_ENABLE_MODULES = YES; IPHONEOS_DEPLOYMENT_TARGET = 15.0; SDKROOT = iphoneos; SWIFT_VERSION = 5.0; }; name = Release; };
+  A10000000000000000000018 /* Target Debug */ = {isa = XCBuildConfiguration; buildSettings = {
+   ARCHS = arm64; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; DEBUG_INFORMATION_FORMAT = dwarf; ENABLE_PREVIEWS = YES; ENABLE_USER_SCRIPT_SANDBOXING = NO;
+   FRAMEWORK_SEARCH_PATHS = ("$(inherited)", "$(SRCROOT)/../sample/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)");
+   GENERATE_INFOPLIST_FILE = YES; INFOPLIST_KEY_CFBundleDisplayName = "Hanzi Animator"; INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES; INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+   INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+   INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+   LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks"); MARKETING_VERSION = 0.1.0;
+   OTHER_LDFLAGS = ("$(inherited)", "-framework", HanziSample); PRODUCT_BUNDLE_IDENTIFIER = engineering.carr.hanzianimator.sample.ios; PRODUCT_MODULE_NAME = HanziAnimatorExample; PRODUCT_NAME = "$(TARGET_NAME)";
+   SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; TARGETED_DEVICE_FAMILY = "1,2";
+  }; name = Debug; };
+  A10000000000000000000019 /* Target Release */ = {isa = XCBuildConfiguration; buildSettings = {
+   ARCHS = arm64; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym"; ENABLE_USER_SCRIPT_SANDBOXING = NO;
+   FRAMEWORK_SEARCH_PATHS = ("$(inherited)", "$(SRCROOT)/../sample/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)");
+   GENERATE_INFOPLIST_FILE = YES; INFOPLIST_KEY_CFBundleDisplayName = "Hanzi Animator"; INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES; INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+   INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+   INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+   LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks"); MARKETING_VERSION = 0.1.0;
+   OTHER_LDFLAGS = ("$(inherited)", "-framework", HanziSample); PRODUCT_BUNDLE_IDENTIFIER = engineering.carr.hanzianimator.sample.ios; PRODUCT_MODULE_NAME = HanziAnimatorExample; PRODUCT_NAME = "$(TARGET_NAME)";
+   SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SWIFT_COMPILATION_MODE = wholemodule; SWIFT_OPTIMIZATION_LEVEL = "-O"; TARGETED_DEVICE_FAMILY = "1,2";
+  }; name = Release; };
+ };
+ rootObject = A10000000000000000000013;
+}

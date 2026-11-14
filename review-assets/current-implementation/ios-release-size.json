@@ -1,0 +1,52 @@
+{
+  "configuration": "Release; unsigned physical iOS arm64 build",
+  "minimumIOS": "15.0",
+  "sdk": "iOS 26.0 / Xcode 26.0.1",
+  "architecture": "Mach-O 64-bit executable arm64; LC_BUILD_VERSION platform iOS minos15.0 sdk26.0",
+  "baseGitRevision": "145e4d682665c2665936aa5bcc979fa390c8d2bd",
+  "workingTreeChangesIncluded": true,
+  "versions": {
+    "kotlin": "2.4.10",
+    "composeMultiplatform": "1.11.1",
+    "agp": "9.0.1",
+    "kotlinx-coroutines": "1.11.0"
+  },
+  "libraryVersion": "0.1.0",
+  "appFileBytes": 39942577,
+  "executableBytes": 33987520,
+  "nativeTextSectionBytes": 22560768,
+  "nativeDataSectionBytes": 344064,
+  "datasetBytes": 5825784,
+  "datasetCanonicalSourceSha256": "d6db1e36007c41b2d68132975bfc132a64f50b9ceae4254730918ba8ea3d5ced",
+  "datasetCharacterCount": 9574,
+  "dataCodec": "Apple system Brotli (iOS15+)",
+  "licenseFiles": [
+    "Arphic-Public-License.txt",
+    "makemeahanzi-GPL.txt",
+    "makemeahanzi-COPYING.txt",
+    "makemeahanzi-LGPL.txt"
+  ],
+  "largestFiles": {
+    "HanziAnimatorExample": 33987520,
+    "strokes/all.hzb": 5825784,
+    "licenses/makemeahanzi-GPL.txt": 35149,
+    "compose-resources/composeResources/engineering.carr.library.generated.resources/files/licenses/makemeahanzi-GPL.txt": 35149,
+    "strokes/index.txt": 28722,
+    "licenses/makemeahanzi-LGPL.txt": 9767
+  },
+  "isAppStoreDownloadEstimate": false,
+  "notes": [
+    "Unsigned Release application built for physical iOS arm64; no simulator/device installation or publication.",
+    "Building rather than archiving can retain symbols; App Store signing, encryption, thinning and archive stripping are unmeasured.",
+    "Size includes the complete shared Compose sample and full dataset; it is not the incremental library cost in an app already using Compose."
+  ],
+  "symbolStrippingExperiment": {
+    "command": "xcrun strip -S -x -o <build-copy> <release-executable>",
+    "strippedExecutableBytes": 25392056,
+    "savedExecutableBytes": 8595464,
+    "projectedAppFileBytesWithStrippedExecutable": 31347113,
+    "verification": "Mach-O arm64 retained; not installed or executed on a physical device; original release app unchanged"
+  },
+  "finalCallbackAndLayoutChangesIncluded": true,
+  "executableSha256": "0ed8e3131557daa61907a5a2441547771776110ae06230cfa8bdfd989afe4d27"
+}

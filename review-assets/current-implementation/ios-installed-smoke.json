@@ -1,0 +1,20 @@
+{
+  "configuration": "Debug, arm64 iOS Simulator",
+  "minimumIOS": "15.0",
+  "testedSimulator": "iPhone 16e / iOS 26.0",
+  "installedSmokeResult": "PASS: 9574 characters; \u6c38 practice; \u68ee repeated component membership; native Brotli bundle",
+  "appFileBytes": 56377957,
+  "datasetBytes": 5825784,
+  "licenseFiles": [
+    "Arphic-Public-License.txt",
+    "makemeahanzi-GPL.txt",
+    "makemeahanzi-COPYING.txt",
+    "makemeahanzi-LGPL.txt"
+  ],
+  "machoFiles": {
+    "__preview.dylib": 16768,
+    "HanziAnimatorExample.debug.dylib": 50366496,
+    "HanziAnimatorExample": 39656
+  },
+  "isAppStoreDownloadEstimate": false
+}

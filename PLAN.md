@@ -1,5 +1,12 @@
 # Architecture & build plan
 
+> Status, 2026-10-12: the production refactor has been implemented. The original
+> design below is historical. See [README.md](README.md),
+> [current architecture and migration](docs/MIGRATION.md),
+> [measured data/runtime sizes](docs/MEASUREMENTS.md), and
+> [validation and release](docs/RELEASING.md) for the final modular API, lossless
+> HZB1 profiles, Canvas adapter, platform packaging and remaining device checks.
+
 This library was extracted from stroke-order functionality that lived inline in
 a private dictionary app, re-shaped into an idiomatic Compose Multiplatform API
 and modelled conceptually (not transliterated) on the Flutter package
@@ -24,7 +31,6 @@ and modelled conceptually (not transliterated) on the Flutter package
   - `StrokeAnimation` — `StrokeAnimationPlanner`, a pure time → frame function.
   - `StrokeRecognizer` — the grader (length/coverage/direction + rotation-robust
     normalized discrete Fréchet, later-stroke disambiguation, reversed detection).
-  - `QuizLogic` (internal) — pure practice-state reducers.
   - `Gzip` — `expect/actual gunzip` (JVM/Android `GZIPInputStream`, iOS
     `platform.zlib`, browser `DecompressionStream`).
 - `data/` — `StrokeOrderProvider` interface and `BundledStrokeOrderProvider`

@@ -1,0 +1,426 @@
+{
+  "validatedAtUtc": "2026-10-12T20:44:23.845806+00:00",
+  "version": "0.1.0",
+  "repositoryKind": "isolated local Maven repository",
+  "metadataRepositoryUrl": "https://github.com/local-test/hanzi-consumer",
+  "publicReleasePerformed": false,
+  "consumerBuild": "standalone Gradle; no project dependencies or composite builds",
+  "consumers": {
+    "headless": {
+      "runtimeDependencies": [
+        "engineering.carr:shenzhen-hanzi-animator-codec",
+        "engineering.carr:shenzhen-hanzi-animator-codec-jvm",
+        "engineering.carr:shenzhen-hanzi-animator-core",
+        "engineering.carr:shenzhen-hanzi-animator-core-jvm",
+        "org.jetbrains.kotlin:kotlin-stdlib",
+        "org.jetbrains:annotations"
+      ],
+      "runtimeModuleCount": 6,
+      "dependencyClosure": "PASS",
+      "publicApiCompilation": "PASS",
+      "testSuites": [
+        {
+          "name": "PublishedCoreCodecTest",
+          "tests": "2",
+          "failures": "0",
+          "errors": "0"
+        }
+      ]
+    },
+    "compose": {
+      "runtimeDependencies": [
+        "androidx.annotation:annotation",
+        "androidx.annotation:annotation-jvm",
+        "androidx.arch.core:core-common",
+        "androidx.collection:collection",
+        "androidx.collection:collection-jvm",
+        "androidx.compose.runtime:runtime",
+        "androidx.compose.runtime:runtime-annotation",
+        "androidx.compose.runtime:runtime-annotation-jvm",
+        "androidx.compose.runtime:runtime-desktop",
+        "androidx.compose.runtime:runtime-retain",
+        "androidx.compose.runtime:runtime-retain-desktop",
+        "androidx.compose.runtime:runtime-saveable",
+        "androidx.compose.runtime:runtime-saveable-desktop",
+        "androidx.lifecycle:lifecycle-common",
+        "androidx.lifecycle:lifecycle-common-jvm",
+        "androidx.lifecycle:lifecycle-runtime",
+        "androidx.lifecycle:lifecycle-runtime-compose",
+        "androidx.lifecycle:lifecycle-runtime-compose-desktop",
+        "androidx.lifecycle:lifecycle-runtime-desktop",
+        "androidx.lifecycle:lifecycle-viewmodel",
+        "androidx.lifecycle:lifecycle-viewmodel-desktop",
+        "androidx.lifecycle:lifecycle-viewmodel-savedstate",
+        "androidx.lifecycle:lifecycle-viewmodel-savedstate-desktop",
+        "androidx.navigationevent:navigationevent",
+        "androidx.navigationevent:navigationevent-desktop",
+        "androidx.savedstate:savedstate",
+        "androidx.savedstate:savedstate-compose",
+        "androidx.savedstate:savedstate-compose-desktop",
+        "androidx.savedstate:savedstate-desktop",
+        "engineering.carr:shenzhen-hanzi-animator-compose",
+        "engineering.carr:shenzhen-hanzi-animator-compose-jvm",
+        "engineering.carr:shenzhen-hanzi-animator-core",
+        "engineering.carr:shenzhen-hanzi-animator-core-jvm",
+        "org.jetbrains.androidx.lifecycle:lifecycle-common",
+        "org.jetbrains.androidx.lifecycle:lifecycle-runtime",
+        "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose",
+        "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose-desktop",
+        "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel",
+        "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-savedstate",
+        "org.jetbrains.androidx.savedstate:savedstate",
+        "org.jetbrains.androidx.savedstate:savedstate-compose",
+        "org.jetbrains.androidx.savedstate:savedstate-compose-desktop",
+        "org.jetbrains.compose.animation:animation",
+        "org.jetbrains.compose.animation:animation-core",
+        "org.jetbrains.compose.animation:animation-core-desktop",
+        "org.jetbrains.compose.animation:animation-desktop",
+        "org.jetbrains.compose.foundation:foundation",
+        "org.jetbrains.compose.foundation:foundation-desktop",
+        "org.jetbrains.compose.foundation:foundation-layout",
+        "org.jetbrains.compose.foundation:foundation-layout-desktop",
+        "org.jetbrains.compose.runtime:runtime",
+        "org.jetbrains.compose.runtime:runtime-desktop",
+        "org.jetbrains.compose.runtime:runtime-saveable",
+        "org.jetbrains.compose.runtime:runtime-saveable-desktop",
+        "org.jetbrains.compose.ui:ui",
+        "org.jetbrains.compose.ui:ui-backhandler",
+        "org.jetbrains.compose.ui:ui-backhandler-desktop",
+        "org.jetbrains.compose.ui:ui-desktop",
+        "org.jetbrains.compose.ui:ui-geometry",
+        "org.jetbrains.compose.ui:ui-geometry-desktop",
+        "org.jetbrains.compose.ui:ui-graphics",
+        "org.jetbrains.compose.ui:ui-graphics-desktop",
+        "org.jetbrains.compose.ui:ui-text",
+        "org.jetbrains.compose.ui:ui-text-desktop",
+        "org.jetbrains.compose.ui:ui-unit",
+        "org.jetbrains.compose.ui:ui-unit-desktop",
+        "org.jetbrains.compose.ui:ui-util",
+        "org.jetbrains.compose.ui:ui-util-desktop",
+        "org.jetbrains.kotlin:kotlin-stdlib",
+        "org.jetbrains.kotlinx:atomicfu",
+        "org.jetbrains.kotlinx:atomicfu-jvm",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-bom",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm",
+        "org.jetbrains.kotlinx:kotlinx-serialization-bom",
+        "org.jetbrains.kotlinx:kotlinx-serialization-core",
+        "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm",
+        "org.jetbrains.runtime:jbr-api",
+        "org.jetbrains.skiko:skiko",
+        "org.jetbrains.skiko:skiko-awt",
+        "org.jetbrains:annotations",
+        "org.jspecify:jspecify"
+      ],
+      "runtimeModuleCount": 82,
+      "dependencyClosure": "PASS",
+      "publicApiCompilation": "PASS",
+      "testSuites": [
+        {
+          "name": "PublishedControllerTest",
+          "tests": "1",
+          "failures": "0",
+          "errors": "0"
+        }
+      ]
+    },
+    "bundled": {
+      "runtimeDependencies": [
+        "engineering.carr:shenzhen-hanzi-animator-bundled-data",
+        "engineering.carr:shenzhen-hanzi-animator-bundled-data-jvm",
+        "engineering.carr:shenzhen-hanzi-animator-codec",
+        "engineering.carr:shenzhen-hanzi-animator-codec-jvm",
+        "engineering.carr:shenzhen-hanzi-animator-core",
+        "engineering.carr:shenzhen-hanzi-animator-core-jvm",
+        "engineering.carr:shenzhen-hanzi-animator-data",
+        "engineering.carr:shenzhen-hanzi-animator-data-jvm",
+        "org.jetbrains.kotlin:kotlin-stdlib",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-bom",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm",
+        "org.jetbrains:annotations"
+      ],
+      "runtimeModuleCount": 13,
+      "dependencyClosure": "PASS",
+      "publicApiCompilation": "PASS",
+      "testSuites": [
+        {
+          "name": "PublishedBundledDataTest",
+          "tests": "1",
+          "failures": "0",
+          "errors": "0"
+        }
+      ]
+    },
+    "json": {
+      "runtimeDependencies": [
+        "engineering.carr:shenzhen-hanzi-animator-core",
+        "engineering.carr:shenzhen-hanzi-animator-core-jvm",
+        "engineering.carr:shenzhen-hanzi-animator-json",
+        "engineering.carr:shenzhen-hanzi-animator-json-jvm",
+        "org.jetbrains.kotlin:kotlin-stdlib",
+        "org.jetbrains.kotlinx:kotlinx-serialization-bom",
+        "org.jetbrains.kotlinx:kotlinx-serialization-core",
+        "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm",
+        "org.jetbrains.kotlinx:kotlinx-serialization-json",
+        "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm",
+        "org.jetbrains:annotations"
+      ],
+      "runtimeModuleCount": 11,
+      "dependencyClosure": "PASS",
+      "publicApiCompilation": "PASS",
+      "testSuites": [
+        {
+          "name": "PublishedJsonTest",
+          "tests": "1",
+          "failures": "0",
+          "errors": "0"
+        }
+      ]
+    },
+    "material3": {
+      "runtimeDependencies": [
+        "androidx.annotation:annotation",
+        "androidx.annotation:annotation-jvm",
+        "androidx.arch.core:core-common",
+        "androidx.collection:collection",
+        "androidx.collection:collection-jvm",
+        "androidx.compose.runtime:runtime",
+        "androidx.compose.runtime:runtime-annotation",
+        "androidx.compose.runtime:runtime-annotation-jvm",
+        "androidx.compose.runtime:runtime-desktop",
+        "androidx.compose.runtime:runtime-retain",
+        "androidx.compose.runtime:runtime-retain-desktop",
+        "androidx.compose.runtime:runtime-saveable",
+        "androidx.compose.runtime:runtime-saveable-desktop",
+        "androidx.graphics:graphics-shapes",
+        "androidx.graphics:graphics-shapes-desktop",
+        "androidx.lifecycle:lifecycle-common",
+        "androidx.lifecycle:lifecycle-common-jvm",
+        "androidx.lifecycle:lifecycle-runtime",
+        "androidx.lifecycle:lifecycle-runtime-compose",
+        "androidx.lifecycle:lifecycle-runtime-compose-desktop",
+        "androidx.lifecycle:lifecycle-runtime-desktop",
+        "androidx.lifecycle:lifecycle-viewmodel",
+        "androidx.lifecycle:lifecycle-viewmodel-desktop",
+        "androidx.lifecycle:lifecycle-viewmodel-savedstate",
+        "androidx.lifecycle:lifecycle-viewmodel-savedstate-desktop",
+        "androidx.navigationevent:navigationevent",
+        "androidx.navigationevent:navigationevent-desktop",
+        "androidx.savedstate:savedstate",
+        "androidx.savedstate:savedstate-compose",
+        "androidx.savedstate:savedstate-compose-desktop",
+        "androidx.savedstate:savedstate-desktop",
+        "engineering.carr:shenzhen-hanzi-animator-compose",
+        "engineering.carr:shenzhen-hanzi-animator-compose-jvm",
+        "engineering.carr:shenzhen-hanzi-animator-core",
+        "engineering.carr:shenzhen-hanzi-animator-core-jvm",
+        "engineering.carr:shenzhen-hanzi-animator-material3",
+        "engineering.carr:shenzhen-hanzi-animator-material3-jvm",
+        "org.jetbrains.androidx.lifecycle:lifecycle-common",
+        "org.jetbrains.androidx.lifecycle:lifecycle-runtime",
+        "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose",
+        "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose-desktop",
+        "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel",
+        "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-savedstate",
+        "org.jetbrains.androidx.savedstate:savedstate",
+        "org.jetbrains.androidx.savedstate:savedstate-compose",
+        "org.jetbrains.androidx.savedstate:savedstate-compose-desktop",
+        "org.jetbrains.compose.animation:animation",
+        "org.jetbrains.compose.animation:animation-core",
+        "org.jetbrains.compose.animation:animation-core-desktop",
+        "org.jetbrains.compose.animation:animation-desktop",
+        "org.jetbrains.compose.foundation:foundation",
+        "org.jetbrains.compose.foundation:foundation-desktop",
+        "org.jetbrains.compose.foundation:foundation-layout",
+        "org.jetbrains.compose.foundation:foundation-layout-desktop",
+        "org.jetbrains.compose.material3:material3",
+        "org.jetbrains.compose.material3:material3-desktop",
+        "org.jetbrains.compose.material:material-ripple",
+        "org.jetbrains.compose.material:material-ripple-desktop",
+        "org.jetbrains.compose.runtime:runtime",
+        "org.jetbrains.compose.runtime:runtime-desktop",
+        "org.jetbrains.compose.runtime:runtime-saveable",
+        "org.jetbrains.compose.runtime:runtime-saveable-desktop",
+        "org.jetbrains.compose.ui:ui",
+        "org.jetbrains.compose.ui:ui-backhandler",
+        "org.jetbrains.compose.ui:ui-backhandler-desktop",
+        "org.jetbrains.compose.ui:ui-desktop",
+        "org.jetbrains.compose.ui:ui-geometry",
+        "org.jetbrains.compose.ui:ui-geometry-desktop",
+        "org.jetbrains.compose.ui:ui-graphics",
+        "org.jetbrains.compose.ui:ui-graphics-desktop",
+        "org.jetbrains.compose.ui:ui-text",
+        "org.jetbrains.compose.ui:ui-text-desktop",
+        "org.jetbrains.compose.ui:ui-unit",
+        "org.jetbrains.compose.ui:ui-unit-desktop",
+        "org.jetbrains.compose.ui:ui-util",
+        "org.jetbrains.compose.ui:ui-util-desktop",
+        "org.jetbrains.kotlin:kotlin-stdlib",
+        "org.jetbrains.kotlinx:atomicfu",
+        "org.jetbrains.kotlinx:atomicfu-jvm",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-bom",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm",
+        "org.jetbrains.kotlinx:kotlinx-datetime",
+        "org.jetbrains.kotlinx:kotlinx-datetime-jvm",
+        "org.jetbrains.kotlinx:kotlinx-serialization-bom",
+        "org.jetbrains.kotlinx:kotlinx-serialization-core",
+        "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm",
+        "org.jetbrains.runtime:jbr-api",
+        "org.jetbrains.skiko:skiko",
+        "org.jetbrains.skiko:skiko-awt",
+        "org.jetbrains:annotations",
+        "org.jspecify:jspecify"
+      ],
+      "runtimeModuleCount": 92,
+      "dependencyClosure": "PASS",
+      "publicApiCompilation": "PASS",
+      "testSuites": []
+    }
+  },
+  "publications": [
+    {
+      "pom": "shenzhen-hanzi-animator-bundled-data-0.1.0.pom",
+      "url": "https://github.com/local-test/hanzi-consumer",
+      "licenses": [
+        "MIT License (Kotlin code)",
+        "Arphic Public License (glyph data)",
+        "GNU Lesser General Public License 3.0 or later (component metadata)"
+      ],
+      "moduleMetadata": "present"
+    },
+    {
+      "pom": "shenzhen-hanzi-animator-bundled-data-jvm-0.1.0.pom",
+      "url": "https://github.com/local-test/hanzi-consumer",
+      "licenses": [
+        "MIT License (Kotlin code)",
+        "Arphic Public License (glyph data)",
+        "GNU Lesser General Public License 3.0 or later (component metadata)"
+      ],
+      "moduleMetadata": "present"
+    },
+    {
+      "pom": "shenzhen-hanzi-animator-codec-0.1.0.pom",
+      "url": "https://github.com/local-test/hanzi-consumer",
+      "licenses": [
+        "MIT License (Kotlin code)"
+      ],
+      "moduleMetadata": "present"
+    },
+    {
+      "pom": "shenzhen-hanzi-animator-codec-jvm-0.1.0.pom",
+      "url": "https://github.com/local-test/hanzi-consumer",
+      "licenses": [
+        "MIT License (Kotlin code)"
+      ],
+      "moduleMetadata": "present"
+    },
+    {
+      "pom": "shenzhen-hanzi-animator-compose-0.1.0.pom",
+      "url": "https://github.com/local-test/hanzi-consumer",
+      "licenses": [
+        "MIT License (Kotlin code)"
+      ],
+      "moduleMetadata": "present"
+    },
+    {
+      "pom": "shenzhen-hanzi-animator-compose-jvm-0.1.0.pom",
+      "url": "https://github.com/local-test/hanzi-consumer",
+      "licenses": [
+        "MIT License (Kotlin code)"
+      ],
+      "moduleMetadata": "present"
+    },
+    {
+      "pom": "shenzhen-hanzi-animator-core-0.1.0.pom",
+      "url": "https://github.com/local-test/hanzi-consumer",
+      "licenses": [
+        "MIT License (Kotlin code)"
+      ],
+      "moduleMetadata": "present"
+    },
+    {
+      "pom": "shenzhen-hanzi-animator-core-jvm-0.1.0.pom",
+      "url": "https://github.com/local-test/hanzi-consumer",
+      "licenses": [
+        "MIT License (Kotlin code)"
+      ],
+      "moduleMetadata": "present"
+    },
+    {
+      "pom": "shenzhen-hanzi-animator-data-0.1.0.pom",
+      "url": "https://github.com/local-test/hanzi-consumer",
+      "licenses": [
+        "MIT License (Kotlin code)"
+      ],
+      "moduleMetadata": "present"
+    },
+    {
+      "pom": "shenzhen-hanzi-animator-data-jvm-0.1.0.pom",
+      "url": "https://github.com/local-test/hanzi-consumer",
+      "licenses": [
+        "MIT License (Kotlin code)"
+      ],
+      "moduleMetadata": "present"
+    },
+    {
+      "pom": "shenzhen-hanzi-animator-json-0.1.0.pom",
+      "url": "https://github.com/local-test/hanzi-consumer",
+      "licenses": [
+        "MIT License (Kotlin code)"
+      ],
+      "moduleMetadata": "present"
+    },
+    {
+      "pom": "shenzhen-hanzi-animator-json-jvm-0.1.0.pom",
+      "url": "https://github.com/local-test/hanzi-consumer",
+      "licenses": [
+        "MIT License (Kotlin code)"
+      ],
+      "moduleMetadata": "present"
+    },
+    {
+      "pom": "shenzhen-hanzi-animator-material3-0.1.0.pom",
+      "url": "https://github.com/local-test/hanzi-consumer",
+      "licenses": [
+        "MIT License (Kotlin code)"
+      ],
+      "moduleMetadata": "present"
+    },
+    {
+      "pom": "shenzhen-hanzi-animator-material3-jvm-0.1.0.pom",
+      "url": "https://github.com/local-test/hanzi-consumer",
+      "licenses": [
+        "MIT License (Kotlin code)"
+      ],
+      "moduleMetadata": "present"
+    }
+  ],
+  "resourceClassifiers": {
+    "ios": {
+      "archive": "shenzhen-hanzi-animator-bundled-data-0.1.0-ios-data.zip",
+      "bytes": 5867784,
+      "rawDataBlocks": 1,
+      "licenseFiles": [
+        "licenses/Arphic-Public-License.txt",
+        "licenses/makemeahanzi-COPYING.txt",
+        "licenses/makemeahanzi-GPL.txt",
+        "licenses/makemeahanzi-LGPL.txt"
+      ],
+      "verification": "PASS"
+    },
+    "web": {
+      "archive": "shenzhen-hanzi-animator-bundled-data-0.1.0-web-data.zip",
+      "bytes": 22651418,
+      "rawDataBlocks": 1024,
+      "licenseFiles": [
+        "licenses/Arphic-Public-License.txt",
+        "licenses/makemeahanzi-COPYING.txt",
+        "licenses/makemeahanzi-GPL.txt",
+        "licenses/makemeahanzi-LGPL.txt"
+      ],
+      "verification": "PASS"
+    }
+  }
+}

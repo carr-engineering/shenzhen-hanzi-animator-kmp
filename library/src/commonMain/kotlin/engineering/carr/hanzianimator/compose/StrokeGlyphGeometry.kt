@@ -1,11 +1,10 @@
 package engineering.carr.hanzianimator.compose
 
-import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathMeasure
-import androidx.compose.ui.graphics.vector.PathParser
 import engineering.carr.hanzianimator.core.GlyphPoint
 import engineering.carr.hanzianimator.core.Stroke
+import engineering.carr.hanzianimator.core.OutlineCommand
 import engineering.carr.hanzianimator.core.StrokeOrder
 import kotlin.math.sqrt
 
@@ -13,7 +12,7 @@ import kotlin.math.sqrt
  * Precomputed, size-independent render data for one [StrokeOrder], built once
  * (via `remember`) and reused across every frame.
  *
- * Each stroke's outline SVG path is parsed and y-flipped into glyph space once,
+ * Each normalized command buffer is converted into a platform path once,
  * and its median is turned into a wide-brush reveal path with a ready
  * [PathMeasure], so per-frame drawing only samples a segment length rather than
  * re-parsing or re-deriving point lists.
@@ -30,20 +29,28 @@ internal class StrokeGlyphGeometry private constructor(
 
     companion object {
         fun from(order: StrokeOrder, medianStartExtension: Float): StrokeGlyphGeometry {
-            // y-up glyph data -> y-down render space: y' = GLYPH_Y_BASE - y.
-            val flip = Matrix().apply {
-                this[1, 1] = -1f
-                this[3, 1] = StrokeOrder.GLYPH_Y_BASE
-            }
             val entries = order.strokes.map { stroke ->
                 val outline = runCatching {
-                    PathParser().parsePathString(stroke.outlineSvgPath).toPath().apply { transform(flip) }
+                    Path().apply {
+                        var at = 0
+                        fun coordinate(): Float = stroke.outline.coordinateAt(at++)
+                        repeat(stroke.outline.commandCount) { index ->
+                            when (stroke.outline.commandAt(index)) {
+                                OutlineCommand.MOVE -> moveTo(coordinate(), coordinate())
+                                OutlineCommand.LINE -> lineTo(coordinate(), coordinate())
+                                OutlineCommand.QUAD -> quadraticTo(coordinate(), coordinate(), coordinate(), coordinate())
+                                OutlineCommand.CUBIC -> cubicTo(coordinate(), coordinate(), coordinate(), coordinate(), coordinate(), coordinate())
+                                OutlineCommand.CLOSE -> close()
+                            }
+                        }
+                    }
                 }.getOrNull()
                 val revealPath = buildRevealPath(stroke, medianStartExtension)
                 val measure = revealPath?.let { PathMeasure().apply { setPath(it, false) } }
                 StrokeGeometryEntry(
                     index = stroke.index,
                     isRadical = stroke.isRadical,
+                    componentIndex = stroke.componentIndex,
                     hasDrawableMedian = stroke.hasDrawableMedian,
                     outlinePath = outline,
                     revealPath = revealPath,
@@ -91,6 +98,7 @@ internal class StrokeGlyphGeometry private constructor(
 internal class StrokeGeometryEntry(
     val index: Int,
     val isRadical: Boolean,
+    val componentIndex: Int?,
     val hasDrawableMedian: Boolean,
     val outlinePath: Path?,
     val revealPath: Path?,

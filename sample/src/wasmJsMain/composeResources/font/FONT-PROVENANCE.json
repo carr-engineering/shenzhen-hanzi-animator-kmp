@@ -1,0 +1,15 @@
+{
+  "sourceCommit": "2894aab31764f10f29c421bdfd2340d3b382d384",
+  "sourceUrl": "https://raw.githubusercontent.com/google/fonts/2894aab31764f10f29c421bdfd2340d3b382d384/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf",
+  "sourceSha256": "a3041811a78c361b1de50f953c805e0244951c21c5bd412f7232ef0d899af0da",
+  "licenseUrl": "https://raw.githubusercontent.com/google/fonts/2894aab31764f10f29c421bdfd2340d3b382d384/ofl/notosanssc/OFL.txt",
+  "licenseSha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9",
+  "fontTools": "4.60.1",
+  "weight": 400,
+  "glyphCodePoints": 9677,
+  "indexSha256": "e3d33c511ef4e234395a9881422c86f85ebafd2829cdd9adc4f425710d7f4062",
+  "datasetSourceSha256": "d6db1e36007c41b2d68132975bfc132a64f50b9ceae4254730918ba8ea3d5ced",
+  "outputSha256": "0f97610fcc4bc7b94a4d06d8f5f5e9ce67111317ea4a18d1096b497037c7851e",
+  "outputBytes": 3297592,
+  "fallbackCodePoints": []
+}

@@ -1,0 +1,7 @@
+import type { AnimatorLabels, AnimatorStyle } from './types.js';
+export const lightComponentColors = Object.freeze(['#283D32', '#3F6D50', '#9E7338', '#625C3D', '#718861', '#AE8B57']);
+export const darkComponentColors = Object.freeze(['#D0DBCD', '#9FC39F', '#D3AE6C', '#ACA77E', '#7FAA84', '#C2A078']);
+export const defaultStyle: Readonly<AnimatorStyle> = Object.freeze({background: '#FAF9F5', outline: '#283D3229', stroke: '#283D32', radical: '#3F6D50', hint: '#3F6D5094', trace: '#9E7338', error: '#B34235', grid: '#283D3229', showGrid: true, componentColors: lightComponentColors, revealWidth: 200, traceWidth: 34, medianStartExtension: 100});
+export const defaultLabels: Readonly<AnimatorLabels> = Object.freeze({canvas: 'Character stroke canvas', play: 'Play', pause: 'Pause', previous: 'Previous', next: 'Next', reveal: 'Reveal', reset: 'Reset', quiz: 'Practice', hint: 'Hint', outline: 'Outline', loading: 'Loading character…', missing: 'No stroke data for this character.', error: 'Unable to load character.', retry: 'Retry', ready: 'Ready', complete: 'Practice complete', accepted: 'Stroke accepted', tryAgain: 'Try this stroke again', practiceUnavailable: 'Practice is unavailable for this character.'});
+export const defaultLightStyle = defaultStyle;
+export const defaultDarkStyle: Readonly<AnimatorStyle> = Object.freeze({...defaultStyle, background: '#171C18', outline: '#D0DBCD29', stroke: '#D0DBCD', radical: '#9FC39F', hint: '#9FC39F94', trace: '#D3AE6C', error: '#EA8A7F', grid: '#D0DBCD29', componentColors: darkComponentColors});

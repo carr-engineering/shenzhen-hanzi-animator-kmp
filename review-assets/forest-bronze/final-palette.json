@@ -1,0 +1,29 @@
+{
+  "id": "defined",
+  "name": "Defined",
+  "description": "Applied / sand last",
+  "light": [
+    "#283D32",
+    "#3F6D50",
+    "#9E7338",
+    "#625C3D",
+    "#718861",
+    "#AE8B57"
+  ],
+  "dark": [
+    "#D0DBCD",
+    "#9FC39F",
+    "#D3AE6C",
+    "#ACA77E",
+    "#7FAA84",
+    "#C2A078"
+  ],
+  "componentOrder": [
+    "Pine ink",
+    "Forest",
+    "Bronze",
+    "Olive",
+    "Sage",
+    "Sand"
+  ]
+}

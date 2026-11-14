@@ -3,16 +3,16 @@ package engineering.carr.hanzianimator.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import engineering.carr.hanzianimator.core.StrokeAnimationConfig
-import engineering.carr.hanzianimator.data.BundledStrokeOrderProvider
 import engineering.carr.hanzianimator.data.StrokeOrderProvider
 
 /**
  * Drop-in stroke-order animation for a [character]: loads the character's data
- * from [provider] (the bundled dataset by default) and autoplays a looping
- * animation. The zero-wiring entry point — supply a character and go.
+ * from the caller's [provider] and autoplays a looping animation.
  *
  * @param loading shown while the character's data is being loaded.
  * @param missing shown when the character is not available from [provider].
@@ -21,20 +21,19 @@ import engineering.carr.hanzianimator.data.StrokeOrderProvider
 public fun HanziStrokeAnimation(
     character: String,
     modifier: Modifier = Modifier,
-    provider: StrokeOrderProvider = BundledStrokeOrderProvider.Default,
+    provider: StrokeOrderProvider,
     animationConfig: StrokeAnimationConfig = StrokeAnimationConfig(loop = true),
     style: StrokeOrderStyle = StrokeOrderDefaults.style(),
     loading: @Composable () -> Unit = {},
-    missing: @Composable () -> Unit = {}
+    missing: @Composable () -> Unit = {},
+    error: @Composable (Throwable, retry: () -> Unit) -> Unit = { _, _ -> }
 ) {
-    val state by produceState<StrokeOrderLoadState>(StrokeOrderLoadState.Loading, character, provider) {
-        value = provider.strokeOrder(character)
-            ?.let { StrokeOrderLoadState.Loaded(it) }
-            ?: StrokeOrderLoadState.Missing
-    }
+    var retryKey by remember(character, provider) { mutableIntStateOf(0) }
+    val state by rememberStrokeOrderLoadState(character, provider, retryKey)
     when (val current = state) {
         StrokeOrderLoadState.Loading -> loading()
         StrokeOrderLoadState.Missing -> missing()
+        is StrokeOrderLoadState.Error -> error(current.cause) { retryKey++ }
         is StrokeOrderLoadState.Loaded -> {
             val controller = rememberStrokeOrderController(
                 strokeOrder = current.order,

@@ -1,0 +1,82 @@
+{
+  "android": {
+    "apk": {
+      "bytes": 8150994,
+      "expandedEntryBytes": 9201111,
+      "dexBytes": 1999444,
+      "dataset": [
+        {
+          "path": "assets/strokes/all.hzb",
+          "bytes": 6865840,
+          "storedBytes": 6865840,
+          "method": 0
+        }
+      ],
+      "fontFiles": [],
+      "licenseFiles": [
+        "licenses/Arphic-Public-License.txt",
+        "licenses/makemeahanzi-COPYING.txt",
+        "licenses/makemeahanzi-GPL.txt",
+        "licenses/makemeahanzi-LGPL.txt"
+      ]
+    },
+    "aab": {
+      "bytes": 10069669,
+      "expandedEntryBytes": 37032336,
+      "dexBytes": 1999444,
+      "dataset": [
+        {
+          "path": "base/assets/strokes/all.hzb",
+          "bytes": 6865840,
+          "storedBytes": 6867652,
+          "method": 8
+        }
+      ],
+      "fontFiles": [],
+      "licenseFiles": [
+        "base/root/licenses/Arphic-Public-License.txt",
+        "base/root/licenses/makemeahanzi-COPYING.txt",
+        "base/root/licenses/makemeahanzi-GPL.txt",
+        "base/root/licenses/makemeahanzi-LGPL.txt"
+      ]
+    }
+  },
+  "composeWeb": {
+    "runtime": [
+      {
+        "path": "index.html",
+        "bytes": 937,
+        "gzipBytes": 504
+      },
+      {
+        "path": "styles.css",
+        "bytes": 102,
+        "gzipBytes": 96
+      },
+      {
+        "path": "6e23e5428398b92da386.wasm",
+        "bytes": 8652729,
+        "gzipBytes": 3319858
+      },
+      {
+        "path": "a84308ab986d6264be87.wasm",
+        "bytes": 3435154,
+        "gzipBytes": 1005710
+      },
+      {
+        "path": "sample.js",
+        "bytes": 534565,
+        "gzipBytes": 100283
+      },
+      {
+        "path": "composeResources/engineering.carr.hanzianimator.sample.resources/font/noto_sans_sc_subset.ttf",
+        "bytes": 3297592,
+        "gzipBytes": 2044361
+      }
+    ],
+    "rawRuntimeAndFontBytes": 15921079,
+    "gzipRuntimeAndFontBytes": 6470812,
+    "staleJsonDataFiles": []
+  },
+  "note": "Local release APK uses debug signing; sizes are local artifacts, not Play/App Store delivery estimates."
+}

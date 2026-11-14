@@ -1,6 +1,8 @@
 package engineering.carr.hanzianimator.sample
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -11,6 +13,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import engineering.carr.hanzianimator.data.BundledStrokeOrderProvider
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /**
@@ -36,52 +42,82 @@ fun CharacterInput(
     modifier: Modifier = Modifier
 ) {
     var text by remember { mutableStateOf("") }
-    var error by remember { mutableStateOf<String?>(null) }
+    var error by remember(provider) { mutableStateOf<String?>(null) }
+    var loading by remember(provider) { mutableStateOf(false) }
+    var request by remember(provider) { mutableStateOf(0) }
+    var job: Job? by remember(provider) { mutableStateOf(null) }
     val scope = rememberCoroutineScope()
+    val selected by rememberUpdatedState(onCharacterSelected)
+    DisposableEffect(provider) { onDispose { job?.cancel() } }
 
-    fun submit() {
+    fun invalidate() {
+        request++
+        job?.cancel()
+        loading = false
+        error = null
+    }
+    fun load(random: Boolean) {
         val candidate = text.trim()
-        when {
-            candidate.codePointCount() != 1 -> error = "Enter exactly one character."
-            else -> scope.launch {
-                if (provider.strokeOrder(candidate) != null) {
-                    error = null
-                    onCharacterSelected(candidate)
-                } else {
-                    error = "No stroke data for “$candidate”."
+        invalidate()
+        if (!random && candidate.codePointCount() != 1) {
+            error = "Enter exactly one character."
+            return
+        }
+        val expected = request
+        loading = true
+        job = scope.launch {
+            try {
+                val character = if (random) provider.randomCharacter() else candidate
+                val order = character?.let { provider.strokeOrder(it) }
+                if (request == expected) {
+                    if (order != null && character != null) {
+                        text = character
+                        selected(character)
+                    } else error = "No stroke data for “${character ?: candidate}”."
                 }
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                if (request == expected) error = "Data could not be loaded. Please try again."
+            } finally {
+                if (request == expected) loading = false
             }
         }
     }
 
+    @Composable
+    fun InputField(fieldModifier: Modifier) {
+        OutlinedTextField(
+            value = text,
+            onValueChange = { invalidate(); text = it },
+            singleLine = true,
+            isError = error != null,
+            label = { Text("Hanzi") },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
+            keyboardActions = KeyboardActions(onGo = { load(false) }),
+            modifier = fieldModifier
+        )
+    }
+    @Composable
+    fun Actions() {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(enabled = !loading, onClick = { load(false) }) { Text(if (loading) "Loading…" else "Show") }
+            OutlinedButton(enabled = !loading, onClick = { load(true) }) { Text("Random") }
+        }
+    }
     Column(modifier, verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            OutlinedTextField(
-                value = text,
-                onValueChange = {
-                    text = it
-                    error = null
-                },
-                singleLine = true,
-                isError = error != null,
-                label = { Text("Hanzi") },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
-                keyboardActions = KeyboardActions(onGo = { submit() }),
-                modifier = Modifier.weight(1f)
-            )
-            Button(onClick = { submit() }) { Text("Show") }
-            OutlinedButton(onClick = {
-                scope.launch {
-                    provider.randomCharacter()?.let { random ->
-                        text = random
-                        error = null
-                        onCharacterSelected(random)
-                    }
+        BoxWithConstraints(Modifier.fillMaxWidth()) {
+            if (maxWidth < 480.dp) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    InputField(Modifier.fillMaxWidth())
+                    Actions()
                 }
-            }) { Text("Random") }
+            } else {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    InputField(Modifier.weight(1f))
+                    Actions()
+                }
+            }
         }
         error?.let {
             Text(

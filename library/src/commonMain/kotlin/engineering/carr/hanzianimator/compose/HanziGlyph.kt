@@ -35,7 +35,10 @@ public fun HanziGlyph(
                             color = strokeFinalColor(
                                 isRadical = entry.isRadical,
                                 normal = style.completedStrokeColor,
-                                radical = style.radicalStrokeColor
+                                radical = style.radicalStrokeColor,
+                                componentIndex = entry.componentIndex,
+                                componentColors = style.componentColors,
+                                hasComponentMapping = strokeOrder.components != null
                             ),
                             style = Fill
                         )

@@ -1,0 +1,30 @@
+import {spawnSync} from 'node:child_process';
+import {cp, mkdir, readFile, readdir, rm, stat, writeFile} from 'node:fs/promises';
+import {gzipSync} from 'node:zlib';
+import {fileURLToPath} from 'node:url';
+import path from 'node:path';
+const browser = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const root = path.dirname(browser);
+const tsc = process.env.TSC_JS ?? (() => { try { return fileURLToPath(import.meta.resolve('typescript/lib/tsc.js')); } catch { return null; } })();
+if (!tsc) throw new Error('Run npm install, or set TSC_JS to an installed TypeScript compiler.');
+const result = spawnSync(process.execPath, [tsc, '-p', path.join(browser, 'tsconfig.json')], {stdio: 'inherit'});
+if (result.status !== 0) process.exit(result.status ?? 1);
+const engine = process.env.HANZI_ENGINE_DIR ?? path.join(root, 'browser-engine/build/dist/js/productionLibrary');
+const files = await readdir(engine).catch(() => { throw new Error('Build :browser-engine:jsBrowserProductionLibraryDistribution first, or set HANZI_ENGINE_DIR.'); });
+await rm(path.join(browser, 'dist/engine'), {recursive: true, force: true});
+await mkdir(path.join(browser, 'dist/engine'), {recursive: true});
+for (const file of files) if (file.endsWith('.mjs') || file.endsWith('.js')) await cp(path.join(engine, file), path.join(browser, 'dist/engine', file));
+const main = files.find(file => /browser-engine\.(m?js)$/.test(file)) ?? files.find(file => file.endsWith('.mjs'));
+if (!main) throw new Error('No engine JS entrypoint found');
+await writeFile(path.join(browser, 'dist/engine.js'), `export { decodeArchive, createStrokeSession } from './engine/${main}';\n`);
+for (const file of ['LICENSE', 'NOTICE']) await cp(path.join(root, file), path.join(browser, file));
+// Demo data includes content-encoding sidecars; ordinary servers can serve raw .hzb.
+await rm(path.join(browser, 'demo/strokes'), {recursive: true, force: true});
+await cp(path.join(root, 'bundled-data/src/webMain/resources/strokes'), path.join(browser, 'demo/strokes'), {recursive: true});
+let raw = 0, gzip = 0;
+async function measure(directory) { for (const file of await readdir(directory)) { const p = path.join(directory, file); if ((await stat(p)).isDirectory()) { if (file !== 'strokes') await measure(p); } else if (/\.m?js$/.test(file)) { const bytes = await readFile(p); raw += bytes.length; gzip += gzipSync(bytes, {level: 9}).length; } } }
+await measure(path.join(browser, 'dist'));
+const report = {javascriptBytes: raw, gzipBytes: gzip, budgetBytes: 250 * 1024};
+await writeFile(path.join(browser, 'dist/size-report.json'), `${JSON.stringify(report, null, 2)}\n`);
+console.log(`Canvas + shared engine: ${raw} bytes raw, ${gzip} bytes gzip.`);
+if (gzip > report.budgetBytes) throw new Error('Browser JS size budget exceeded');

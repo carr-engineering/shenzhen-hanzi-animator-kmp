@@ -1,0 +1,123 @@
+[
+  {
+    "canvasWidths": [
+      248,
+      248
+    ],
+    "inputDirection": "column",
+    "overflowingControls": 0,
+    "paneColumns": "248px",
+    "scrollWidth": 280,
+    "width": 280
+  },
+  {
+    "canvasWidths": [
+      288,
+      288
+    ],
+    "inputDirection": "column",
+    "overflowingControls": 0,
+    "paneColumns": "288px",
+    "scrollWidth": 320,
+    "width": 320
+  },
+  {
+    "canvasWidths": [
+      328,
+      328
+    ],
+    "inputDirection": "column",
+    "overflowingControls": 0,
+    "paneColumns": "328px",
+    "scrollWidth": 360,
+    "width": 360
+  },
+  {
+    "canvasWidths": [
+      358,
+      358
+    ],
+    "inputDirection": "column",
+    "overflowingControls": 0,
+    "paneColumns": "358px",
+    "scrollWidth": 390,
+    "width": 390
+  },
+  {
+    "canvasWidths": [
+      360,
+      360
+    ],
+    "inputDirection": "column",
+    "overflowingControls": 0,
+    "paneColumns": "447px",
+    "scrollWidth": 479,
+    "width": 479
+  },
+  {
+    "canvasWidths": [
+      360,
+      360
+    ],
+    "inputDirection": "row",
+    "overflowingControls": 0,
+    "paneColumns": "448px",
+    "scrollWidth": 480,
+    "width": 480
+  },
+  {
+    "canvasWidths": [
+      360,
+      360
+    ],
+    "inputDirection": "row",
+    "overflowingControls": 0,
+    "paneColumns": "687px",
+    "scrollWidth": 719,
+    "width": 719
+  },
+  {
+    "canvasWidths": [
+      360,
+      360
+    ],
+    "inputDirection": "row",
+    "overflowingControls": 0,
+    "paneColumns": "719px",
+    "scrollWidth": 751,
+    "width": 751
+  },
+  {
+    "canvasWidths": [
+      348,
+      348
+    ],
+    "inputDirection": "row",
+    "overflowingControls": 0,
+    "paneColumns": "348px 348px",
+    "scrollWidth": 752,
+    "width": 752
+  },
+  {
+    "canvasWidths": [
+      360,
+      360
+    ],
+    "inputDirection": "row",
+    "overflowingControls": 0,
+    "paneColumns": "452px 452px",
+    "scrollWidth": 960,
+    "width": 960
+  },
+  {
+    "canvasWidths": [
+      360,
+      360
+    ],
+    "inputDirection": "row",
+    "overflowingControls": 0,
+    "paneColumns": "468px 468px",
+    "scrollWidth": 1440,
+    "width": 1440
+  }
+]

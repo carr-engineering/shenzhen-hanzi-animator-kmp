@@ -1,49 +1,55 @@
 shenzhen-hanzi-animator
 Copyright (c) 2026 Marcus Carr
 
-This product is licensed under the MIT License (see LICENSE).
+Kotlin and TypeScript implementation: MIT License (LICENSE).
+The bundled data and sample font have separate licenses described below.
 
-It bundles and builds upon third-party data and draws on the design
-conventions of related open-source projects, acknowledged below.
+BUNDLED GLYPH DATA — ARPHIC PUBLIC LICENSE
 
---------------------------------------------------------------------------------
-Bundled stroke data
---------------------------------------------------------------------------------
+Glyph outlines, stroke order and medians come from chanind/hanzi-writer-data,
+commit 68d10a4b21150cae5e1ebbd223eed289cf32d90c, data/all.json.
+https://github.com/chanind/hanzi-writer-data
+The pinned glyph corpus is under the Arphic Public License, not the MIT license
+of the separate Hanzi Writer application. It derives from Make Me a Hanzi and
+Arphic PL fonts, Copyright (C) 1999 Arphic Technology Co., Ltd.
+https://github.com/skishore/makemeahanzi
 
-Hanzi stroke outlines, stroke order, and medians are packaged from the
-hanzi-writer-data project. The underlying glyph data derives from Make Me a
-Hanzi, which is in turn derived from the Arphic PL fonts.
+COMPONENT METADATA — LGPL-3.0-OR-LATER
 
-  Hanzi Writer               MIT License
-  https://hanziwriter.org/
-  https://github.com/chanind/hanzi-writer
+Occurrence labels and stroke membership come from Make Me a Hanzi dictionary.txt,
+decomposition and matches fields, commit 618dbab8a8ddefb958763c8b4afbaa741a4460de.
+The dictionary derives from Unihan and CJKlib. The upstream COPYING and complete
+LGPL/GPL texts, including the upstream Unicode notice, are preserved.
 
-  hanzi-writer-data          MIT License (project) /
-                             Arphic Public License (underlying glyph data)
-  https://github.com/chanind/hanzi-writer-data
+Modifications include occurrence extraction, indexed component membership,
+lossless HZB1 command/median encoding, indexes and platform compression/sharding.
+Stroke geometry/order, radical flags, repeated components and unmapped strokes
+are preserved. The complete enriched source is tools/fixtures/source-data.json.gz;
+tools/fixtures/source-manifest.json records the original source hashes.
+See tools/DATA_PROVENANCE.md and tools/generate_stroke_data.py for reproduction.
 
-  Make Me a Hanzi            Arphic Public License / LGPL-3.0
-  https://github.com/skishore/makemeahanzi
+Full notices accompany bundled-data resources in:
+  bundled-data/src/commonMain/resources/licenses/Arphic-Public-License.txt
+  bundled-data/src/commonMain/resources/licenses/makemeahanzi-COPYING.txt
+  bundled-data/src/commonMain/resources/licenses/makemeahanzi-LGPL.txt
+  bundled-data/src/commonMain/resources/licenses/makemeahanzi-GPL.txt
+Copies are retained in docs/licenses/. Preserve these with redistributed data,
+including separately hosted browser shards and iOS application resources.
 
-The exact upstream commit the bundled shards were generated from is recorded
-in tools/DATA_PROVENANCE.md.
+SAMPLE FONT — SIL OPEN FONT LICENSE 1.1
 
---------------------------------------------------------------------------------
-Design and implementation references
---------------------------------------------------------------------------------
+The Compose Wasm sample includes a subset of Noto Sans SC from google/fonts.
+Copyright 2014-2021 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'.
+Noto is a trademark of Google LLC.
+https://github.com/google/fonts/tree/main/ofl/notosanssc
+The subset retains dataset characters, ASCII and sample punctuation and pins
+the variable weight axis to Regular. The font is only in :sample's Wasm resources,
+not the published library or Canvas package. See the adjacent FONT-NOTICE.md
+and docs/THIRD_PARTY.md for the source/provenance record and full license location.
 
-The clipped stroke-reveal animation and guided-quiz conventions follow those
-established by Hanzi Writer (above). The Flutter package stroke_order_animator
-was an additional conceptual reference for the animation controller API; no
-code was copied from it.
+DESIGN REFERENCES
 
-  stroke_order_animator      BSD-3-Clause License
-  https://pub.dev/packages/stroke_order_animator
-
---------------------------------------------------------------------------------
-Sample application
---------------------------------------------------------------------------------
-
-The :sample module bundles a subset of the Noto Sans SC font, distributed
-under the SIL Open Font License 1.1. See sample/.../FONT-NOTICE.md for details.
-The sample module is not part of the published library artifact.
+Hanzi Writer (MIT application) established the clipped median reveal and guided
+quiz conventions. https://github.com/chanind/hanzi-writer
+stroke_order_animator (BSD-3-Clause) was a conceptual controller API reference;
+no code was copied. https://pub.dev/packages/stroke_order_animator

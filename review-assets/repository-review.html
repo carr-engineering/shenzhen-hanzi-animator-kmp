@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hanzi animator production readiness review</title>
+<style>
+  :root { color-scheme: light dark; font: 17px/1.6 system-ui,sans-serif; }
+  body { max-width: 1000px; margin: auto; padding: 36px 22px 80px; }
+  h1,h2,h3 { line-height: 1.25; } h2 { margin-top: 2.4em; }
+  a { color: #4684c7; } code { font-size: .87em; overflow-wrap: anywhere; }
+  table { width: 100%; border-collapse: collapse; font-size: .93em; }
+  td,th { text-align: left; vertical-align: top; padding: 10px; border-bottom: 1px solid #8885; }
+  .scroll { overflow-x: auto; } .meta,figcaption { color: #888; font-size: .9em; }
+  .finding { border-left: 3px solid #a94c3b; padding-left: 18px; margin: 2em 0; }
+  figure { margin: 24px 0; } img { max-width: 100%; height: auto; border: 1px solid #8885; }
+  .phone { max-width: 320px; } li { margin: .5em 0; }
+</style>
+<h1>Hanzi animator production readiness review</h1>
+<p class="meta">12 October 2026 · Current working tree, including existing uncommitted changes</p>
+<p>The library has a useful controller and provider architecture, but its current build, Android resource packaging, and bundled-data attribution need correction before a public release. Its largest predictable size improvement is optional character data. Runtime loading, parser validation, callback lifecycle, and responsive controls need hardening before applications should depend on it.</p>
+<p>This review covers correctness, reusable-library integration, public GitHub publication, download size, and the Compose web demo. Application sources were not edited. Measurements and screenshots accompany this report in the same directory.</p>
+
+<h2>Release blockers</h2>
+<div class="finding"><h3>P1 — Android packages different resource names from those requested by the loader</h3>
+<p><a href="../library/src/commonMain/kotlin/engineering/carr/hanzianimator/data/BundledStrokeOrderProvider.kt">BundledStrokeOrderProvider.kt, lines 59 and 72</a> requests <code>files/strokes/&lt;id&gt;.json.gz</code> and <code>files/strokes/index.txt.gz</code>. The newly built release APK contains 257 stroke assets, but none ends in <code>.gz</code>. Its shard zero is named <code>0.json</code> and its bytes exactly equal the decompressed source shard; the index is named <code>index.txt</code>.</p>
+<p>The suffix removal and decompression are already visible in merged Android assets. The generated Compose resource reader only prepends the resource namespace, and the Android reader delegates the same path to <code>AssetManager.open</code>. There is no compensating suffix translation. This provides strong packaged-artifact evidence that the bundled provider cannot resolve these paths; an installed-device run was not performed.</p>
+<p><strong>Correction:</strong> store gzip bytes under an opaque extension such as <code>.bin</code>, update generator, resource names and loader together, and inspect the resulting APK. Add an installed-app test that reads the index and animates a real bundled character. A successful compilation or host-side test does not exercise this packaging behavior.</p></div>
+
+<div class="finding"><h3>P1 — The normal build fails during sample configuration</h3>
+<p><a href="../sample/build.gradle.kts">sample/build.gradle.kts, lines 6–7</a> applies Kotlin Multiplatform and <code>com.android.application</code> with AGP 9.0.1. The normal build rejects this combination with built-in Kotlin enabled. This also prevents library-only tasks because Gradle configures the sample.</p>
+<p><strong>Correction:</strong> move the Android application into its own module consuming the shared sample UI. Temporary <code>-Pandroid.builtInKotlin=false -Pandroid.newDsl=false</code> flags allowed this review's builds, but they are deprecated compatibility settings. Verify the documented commands without those flags. <a href="https://developer.android.com/build/migrate-to-built-in-kotlin">Android migration documentation</a> and <a href="https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-project-agp-9-migration.html">KMP project migration guidance</a>.</p></div>
+
+<div class="finding"><h3>P1 — Data attribution and license distribution need correction</h3>
+<p><a href="../README.md">README.md, line 168</a>, <a href="../tools/DATA_PROVENANCE.md">DATA_PROVENANCE.md, line 19</a>, and <a href="../NOTICE">NOTICE, line 21</a> describe the pinned data as MIT. The <a href="https://github.com/chanind/hanzi-writer-data/tree/68d10a4b21150cae5e1ebbd223eed289cf32d90c">exact pinned upstream</a> describes the data as separately licensed under the Arphic Public License, and its package metadata refers to <code>ARPHICPL.TXT</code>.</p>
+<p><strong>Correction:</strong> distinguish MIT Kotlin code from the data license, preserve upstream copyright and ship the unaltered <a href="https://raw.githubusercontent.com/chanind/hanzi-writer-data/68d10a4b21150cae5e1ebbd223eed289cf32d90c/ARPHICPL.TXT">upstream license text</a> in the repository and relevant published artifacts. Check the treatment of repackaged data against its modification terms. This finding concerns attribution and distribution readiness; it is not a legal conclusion.</p>
+<p>The sample font also needs its full <a href="https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssc/OFL.txt">OFL copyright and license</a> alongside distributed copies. The committed notice and embedded font metadata currently provide links and short notices, not the full license text.</p></div>
+
+<h2>Correctness findings</h2>
+<div class="scroll"><table>
+<thead><tr><th>Priority and location</th><th>Trigger and consequence</th><th>Correction and evidence</th></tr></thead>
+<tbody>
+<tr><td>P1<br><a href="../library/src/commonMain/kotlin/engineering/carr/hanzianimator/compose/HanziStrokeAnimation.kt">HanziStrokeAnimation.kt:30</a><br><a href="../library/src/commonMain/kotlin/engineering/carr/hanzianimator/compose/HanziStrokePractice.kt">HanziStrokePractice.kt:41</a></td><td>A failed fetch, decompression or custom provider throws through the composition effect. There is no recoverable error presentation.</td><td>Add Error state, error UI slot and retry. Preserve CancellationException. High confidence from source inspection.</td></tr>
+<tr><td>P2<br>Same loading effects</td><td>After A has loaded, selecting slow-loading B leaves A displayed and interactive. produceState's initial value does not reset when its keys change.</td><td>Associate loading state with the request key, reset Loading on new requests, and test delayed providers. High confidence from lifecycle inspection. The sample AnimatePane has the same pattern.</td></tr>
+<tr><td>P2<br><a href="../library/src/commonMain/kotlin/engineering/carr/hanzianimator/compose/StrokeOrderCanvas.kt">StrokeOrderCanvas.kt:92</a></td><td>Changing callbacks while order/index stay the same retains the old callbacks. Replacing a quiz controller for the same order/index can submit to the old controller.</td><td>Key pointerInput on controller identity; use rememberUpdatedState for callbacks. High confidence from capture/key inspection.</td></tr>
+<tr><td>P2<br><a href="../library/src/commonMain/kotlin/engineering/carr/hanzianimator/core/StrokeOrder.kt">StrokeOrder.kt:95,105,110,147</a></td><td>The nullable parser throws IllegalArgumentException for valid JSON with invalid shapes, e.g. {"strokes":[{}]}, object radical indexes, or object median coordinates.</td><td>Use checked JsonPrimitive casts and schema validation. Preserve stroke-to-median index alignment when rejecting invalid entries. Confirmed by directly compiled Kotlin reproductions.</td></tr>
+<tr><td>P2<br><a href="../library/src/iosMain/kotlin/engineering/carr/hanzianimator/core/Gzip.ios.kt">Gzip.ios.kt:59</a></td><td>No-progress Z_BUF_ERROR terminates successfully without Z_STREAM_END. Removing the last eight gzip trailer bytes still returns complete JSON; further truncation returns partial bytes.</td><td>Require Z_STREAM_END and reject truncation. Confirmed by reproducing the exact loop against system zlib; Kotlin/iOS execution remains unverified. <a href="https://zlib.net/manual.html">zlib return contract</a>.</td></tr>
+<tr><td>P2<br><a href="../library/src/commonMain/kotlin/engineering/carr/hanzianimator/compose/StrokeOrderControls.kt">StrokeOrderControls.kt:30</a></td><td>The fixed single-row control bar clips rightmost actions at 320-pixel viewport width inside the sample card.</td><td>Wrap controls with FlowRow or use a compact arrangement with overflow actions; retain accessible touch targets. Confirmed in the freshly built web demo.</td></tr>
+</tbody></table></div>
+<p>Lower-priority API corrections: validate nonnegative shard cache size; currently a negative value eventually calls <code>first()</code> on an empty map. Clarify fixed animation duration clamping: a requested 1,000 ms becomes 850 ms with the current defaults. Expose whether a custom order has usable practice medians, so an impossible quiz cannot be started silently. Define model index invariants and defensive list immutability before promising a stable API.</p>
+<p>All 9,574 bundled characters and 112,617 strokes were scanned; none has missing or degenerate medians. Custom-provider validation remains necessary.</p>
+
+<h2>Measured size and what the numbers mean</h2>
+<p>Detailed bytes, hashes, artifact categories and methods are recorded in <a href="size-measurements.json">size-measurements.json</a>. MiB here means 1,048,576 bytes.</p>
+<div class="scroll"><table><thead><tr><th>Artifact or component</th><th>Measured size</th><th>Interpretation</th></tr></thead><tbody>
+<tr><td>Android release sample APK</td><td>22.86 MiB</td><td>Built with shrinking disabled and temporary AGP flags. This is an APK archive, not device-specific Play download or installed storage.</td></tr>
+<tr><td>Stroke assets inside APK</td><td>12.30 MiB compressed ZIP payload</td><td>About 54% of the APK. Names and decoded bytes currently conflict with the loader.</td></tr>
+<tr><td>DEX inside APK</td><td>7.94 MiB compressed ZIP payload</td><td>Includes application and dependency code; incremental library cost needs a baseline consumer.</td></tr>
+<tr><td>Sample font inside APK</td><td>1.95 MiB compressed ZIP payload</td><td>Sample-only; not part of the published library.</td></tr>
+<tr><td>Committed data plus index</td><td>12.25 MiB</td><td>Already gzip compressed, included by the current monolithic library.</td></tr>
+<tr><td>Web deployment directory</td><td>29.08 MiB</td><td>Includes all lazy shards and source map; not startup transfer.</td></tr>
+<tr><td>Web startup JS, two Wasm binaries and font</td><td>15.36 MiB raw<br>6.25 MiB gzip estimate<br>5.55 MiB Brotli estimate</td><td>Local compression estimates, not captured hosted HTTP traffic. Add about 43 KB for the initial character shard and small HTML/CSS.</td></tr>
+<tr><td>iOS app download and installed size</td><td>Not measured</td><td>No representative iOS consumer app. A library framework alone cannot establish user download size.</td></tr>
+</tbody></table></div>
+<p>The 8.25 MiB raw Skiko Wasm binary is the graphics runtime. The app Wasm is 3.45 MiB and the sample font is 3.14 MiB. Applications already using Compose may already pay part of the runtime cost, so compare equivalent consumers rather than treating the sample total as incremental library overhead.</p>
+
+<h2>Size improvements in recommended order</h2>
+<ol>
+<li><strong>Make the dataset optional.</strong> Publish separate core, Compose rendering/controller, optional Material 3 conveniences, and bundled-data artifacts. Keep a convenient umbrella dependency if desired. Applications providing their own data should not need all 12.25 MiB. Current source layering is helpful, but one published module still brings resources and Compose dependencies together.</li>
+<li><strong>Generate curriculum subsets.</strong> Add a character-list input and produce only selected data plus a matching index. This preserves offline use. Savings depend on the actual character list; resource shrinking cannot infer it from dynamically constructed filenames.</li>
+<li><strong>Enable Android release shrinking in a representative consumer.</strong> Measure R8 and resource shrinking, then smoke-test playback, recognition and resource loading. The current sample disables minification. <a href="https://developer.android.com/topic/performance/reduce-apk-size">Android size guidance</a>.</li>
+<li><strong>Transport-compress and cache web runtime assets.</strong> Gzip/Brotli materially reduces the measured JS/Wasm/font bytes. Treat existing gzip data as opaque compressed content: a Content-Encoding:gzip header on those same bytes can cause browser decompression before the explicit gunzip call. A renamed opaque resource extension also helps make this distinction clear. <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Encoding">Content-Encoding semantics</a>.</li>
+<li><strong>Tune web shards for sparse use.</strong> Current 256 shards have a median 49,331.5-byte request. An in-memory recompression experiment with 1,024 shards reduced this to 13,030 bytes while increasing total compressed data by about 530 KB. One file per character had a 1,466-byte median and a 14.39 MB total, about 1.56 MB more than today. Choose separately for native offline packaging and web sparse access.</li>
+<li><strong>Offer an optional remote provider.</strong> Use versioned URLs, bounded persistent caching, retry, cancellation and explicit offline behavior. Applications can supply their existing networking client. This moves bytes out of initial installs rather than eliminating later downloads/storage.</li>
+<li><strong>Optimize sample font coverage when product requirements permit.</strong> It is already subsetted to the complete dataset and regular weight. A fixed curriculum can use fewer glyphs; full random-character support requires broader coverage or lazy subsets/fallback. Verify rendering and actual requests before adopting a new format.</li>
+</ol>
+<p>For native measurements, compare a baseline Compose app, the same app with tiny custom stroke data, and the same app with all bundled data. Use <a href="https://developer.android.com/tools/bundletool">bundletool</a> device-specific estimates on Android and an <a href="https://developer.apple.com/documentation/Xcode/reducing-your-app-s-size">App Thinning Size Report</a> on iOS. Gzip is already level 9; compression-level changes are a secondary opportunity. A custom binary geometry format adds maintenance and should follow the simpler packaging wins.</p>
+
+<h2>Responsive layout findings</h2>
+<p>At 390 pixels wide the sample stacks the panes and shows all controls. At 320 pixels the controls overflow the available card width, and the text field is squeezed by its two adjacent buttons. At 752 pixels the two-column layout activates and both canvases fit, but feedback is below the short viewport. At 1440 × 900, uncapped square canvases become large enough to push the controls below the visible area.</p>
+<figure><img class="phone" src="web-320x640.jpg" alt="320-pixel web demo showing squeezed input and clipped rightmost canvas controls"><figcaption>Fresh production build at 320 × 640. The rightmost control actions are clipped.</figcaption></figure>
+<figure><img src="web-752x600.jpg" alt="Two-column web demo at the wide breakpoint"><figcaption>752 × 600. Content width is 720 after outer padding; the two-column breakpoint uses content width.</figcaption></figure>
+<figure><img src="web-1440x900.jpg" alt="Large web demo where canvases push controls below the fold"><figcaption>1440 × 900. Large canvas height is the main layout inefficiency.</figcaption></figure>
+<p><strong>Recommended layout:</strong> wrap or compact the library control bar; stack input actions beneath the field on narrow screens; shorten the demo title on mobile; center content within a maximum width; cap canvas width around 360–480 dp according to the desired practice size. Keep vertical scrolling for short screens. The scroll container exists in source, but a short-height scroll/active-drawing gesture test was interrupted and remains unverified.</p>
+<p>Add layout checks at 280/320/360/390 widths, immediately on each side of the two-column breakpoint, short landscape heights, and large font scales. Test keyboard/screen-reader navigation and scrolling outside an active practice canvas. Make convenience-control accessibility labels configurable for localization; they are currently English.</p>
+
+<h2>Public library and GitHub readiness</h2>
+<ul>
+<li>Replace <code>OWNER</code> publication URLs/developer identity and incorrect POM distribution metadata. Centralize the version used by coordinates and the public version constant.</li>
+<li>Review public ABI dependencies currently declared implementation. Modifier, Color, composable annotations and CoroutineScope appear in public APIs. Export their dependencies where appropriate and compile a separate consumer against published metadata. This is a contract concern, not an independently reproduced consumer compilation failure.</li>
+<li>Consume the Maven publication in an isolated sample instead of only project dependencies. Test packaged-resource loading on Android, iOS and web; local publishing alone does not prove installed integration.</li>
+<li>Document the supported Kotlin/Compose baseline, Android minSdk 24, iOS minimum, ARM simulator coverage, and browser requirements. README's Safari 16.4+ claim is inaccurate for the Wasm-only sample: <a href="https://kotlinlang.org/docs/wasm-configuration.html">Kotlin/Wasm documents Safari 18.2+</a>. A JS library target exists, but the sample has no JS fallback.</li>
+<li>Add an iOS Compose integration example. If native Swift users are an intended audience, provide a UIViewController bridge and an explicit framework/XCFramework distribution route; a turnkey Swift package is not currently demonstrated.</li>
+<li>Add API/ABI compatibility checks, API documentation, a release checklist for Maven Central namespace/signing/versioning, and CI size budgets.</li>
+<li>Pin the font source commit/hash and declare the fontTools generation dependency. The current generator fetches a mutable upstream main branch.</li>
+<li>Record actual custom data-generator input hashes. The local --all-json override currently writes the same pinned upstream provenance even for arbitrary local input; validation should fail rather than merely log structural mismatches.</li>
+</ul>
+<p>A safe heuristic scan of 397 unique historical Git blobs across all refs found no common private-key, GitHub, AWS, OpenAI-token or quoted-credential candidates. No credential values were printed. This screening is useful evidence, not proof against every possible secret format.</p>
+
+<h2>Performance and code quality</h2>
+<p>Useful foundations include explicit API mode, pure planner/recognizer separation in source, the provider seam, cached drawing geometry, shared provider identity, draw-phase animation state, and cancellation cleanup of partial traces. The complete dataset scan and JVM parsing/rendering coverage are valuable.</p>
+<p>Profile cold loads and stroke submission before adopting more complex optimizations. The provider currently holds one mutex across fetch, decompression and JSON parsing, so unrelated shards and cached reads can wait behind a slow download. Use per-shard in-flight work and a short cache lock if necessary. Native decoding/parsing runs on the caller context and should be moved off the UI dispatcher when profiling shows stalls. Expected recognition geometry/resampling can be cached per order if pointer-up work is significant.</p>
+
+<h2>Validation and remaining limits</h2>
+<p>The normal documented Gradle build failed at AGP plugin configuration. With the temporary flags, JVM tests and the Android release APK/web production distribution completed successfully. Test reports show 34 JVM, 28 Android host and 28 Wasm browser tests passing, with zero reported failures. Host tests do not establish Android installed-resource correctness.</p>
+<p>The subsequent aggregate run failed in JS compilation and iOS simulator linking because disk space was exhausted and was stopped. After disk space became available, a targeted continuation completed JS browser tests, iOS simulator tests and the iOS ARM64 release framework link successfully. Final per-target counts are saved in <a href="test-summary.json">test-summary.json</a>. The linked static framework is approximately 79 MiB, including development/link-time material; this is not an installed-app or App Store download estimate. Installed Android and iOS consumer-resource smoke tests remain outstanding. No release was published and no source fixes were applied.</p>
+<p><strong>Recommended sequence:</strong> correct Android assets and normal builds; fix attribution/license packaging; harden loading, callbacks, malformed data and gzip; fix narrow controls; split optional data before stabilizing public coordinates; then run published-consumer/platform smoke tests and establish size budgets.</p>
+</html>

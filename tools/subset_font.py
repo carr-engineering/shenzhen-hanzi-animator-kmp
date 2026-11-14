@@ -1,120 +1,141 @@
 #!/usr/bin/env python3
-"""Subset Noto Sans SC to just the glyphs the sample app needs.
+"""Build the sample-only Wasm font from a verified, pinned Noto Sans SC source.
 
-WebAssembly Compose cannot render CJK text without a bundled font, and the full
-Noto Sans SC is ~17 MB. This subsets it to the bundled stroke dataset's
-characters plus ASCII and a few UI punctuation marks, and pins the variable
-weight axis to Regular, producing a small font for the `:sample` module.
+Install the pinned requirements from tools/font-requirements.txt, then run:
+    python3 tools/subset_font.py [--source PATH] [--license PATH]
 
-Usage:
-    python3 tools/subset_font.py [--source PATH]
-
-If --source is omitted the upstream variable font is downloaded. The output is
-committed to the sample's Compose resources.
+Source/Unicode-set SHA-256 hashes and fontTools version are verified. Fonts are
+staged, roundtrip inspected and replaced only after successful validation. The
+font is never included in native samples or published library artifacts.
 """
 from __future__ import annotations
 
 import argparse
-import gzip
+import hashlib
+import io
+import json
 import os
+import shutil
+from pathlib import Path
+import tempfile
 import urllib.request
 
+import fontTools
 from fontTools import subset
 from fontTools.ttLib import TTFont
 from fontTools.varLib.instancer import instantiateVariableFont
 
-# Upstream Noto Sans SC variable font (SIL Open Font License 1.1).
-SOURCE_URL = "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf"
-
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-INDEX_GZ = os.path.join(
-    REPO_ROOT, "library", "src", "commonMain", "composeResources", "files", "strokes", "index.txt.gz"
-)
-OUTPUT_PATH = os.path.join(
-    REPO_ROOT, "sample", "src", "commonMain", "composeResources", "font", "noto_sans_sc_subset.ttf"
-)
-NOTICE_PATH = os.path.join(
-    REPO_ROOT, "sample", "src", "commonMain", "composeResources", "font", "FONT-NOTICE.md"
-)
-
-# UI punctuation used by the sample beyond printable ASCII.
+ROOT = Path(__file__).resolve().parent.parent
+SOURCE_COMMIT = "2894aab31764f10f29c421bdfd2340d3b382d384"
+SOURCE_URL = f"https://raw.githubusercontent.com/google/fonts/{SOURCE_COMMIT}/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf"
+LICENSE_URL = f"https://raw.githubusercontent.com/google/fonts/{SOURCE_COMMIT}/ofl/notosanssc/OFL.txt"
+SOURCE_SHA256 = "a3041811a78c361b1de50f953c805e0244951c21c5bd412f7232ef0d899af0da"
+LICENSE_SHA256 = "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+FONTTOOLS_VERSION = "4.60.1"
+INDEX = ROOT / "bundled-data/src/webMain/resources/strokes/index.txt"
+OUTPUT_DIR = ROOT / "sample/src/wasmJsMain/composeResources/font"
 EXTRA_CHARS = "·×→←✓…—’"
 
 
-def dataset_characters() -> set[str]:
-    return set(gzip.open(INDEX_GZ, "rb").read().decode("utf-8"))
-
-
-def load_source(source: str | None) -> TTFont:
-    if source and os.path.exists(source):
-        print(f"Using source font {source}")
-        return TTFont(source)
-    print(f"Downloading source font from {SOURCE_URL}")
-    data = urllib.request.urlopen(SOURCE_URL).read()
-    tmp = os.path.join(os.path.dirname(OUTPUT_PATH), "_source.ttf")
-    os.makedirs(os.path.dirname(tmp), exist_ok=True)
-    with open(tmp, "wb") as f:
-        f.write(data)
-    font = TTFont(tmp)
-    os.remove(tmp)
-    return font
+def verified_bytes(local: Path | None, url: str, expected: str) -> bytes:
+    raw = local.read_bytes() if local is not None else urllib.request.urlopen(url, timeout=60).read()
+    if hashlib.sha256(raw).hexdigest() != expected:
+        raise ValueError(f"source checksum mismatch: {local or url}")
+    return raw
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", help="Path to a local Noto Sans SC variable font.")
+    parser.add_argument("--source", type=Path)
+    parser.add_argument("--license", type=Path)
+    parser.add_argument("--output", type=Path, default=OUTPUT_DIR)
     args = parser.parse_args()
-
-    chars = dataset_characters()
-    chars.update(chr(c) for c in range(0x20, 0x7F))  # printable ASCII
-    chars.update(EXTRA_CHARS)
-    print(f"Subsetting to {len(chars)} characters")
-
-    font = load_source(args.source)
-
+    if fontTools.version != FONTTOOLS_VERSION:
+        raise ValueError(f"Use fontTools {FONTTOOLS_VERSION}, found {fontTools.version}")
+    index = INDEX.read_bytes()
+    data_manifest = json.loads((INDEX.parent / "manifest.json").read_text())
+    characters = set(index.decode("utf-8")) | {chr(n) for n in range(0x20, 0x7f)} | set(EXTRA_CHARS)
+    source = verified_bytes(args.source, SOURCE_URL, SOURCE_SHA256)
+    license_text = verified_bytes(args.license, LICENSE_URL, LICENSE_SHA256)
+    font = TTFont(io.BytesIO(source), recalcTimestamp=False)
+    requested = {ord(char) for char in characters}
+    missing = requested - set(font.getBestCmap())
+    if missing:
+        raise ValueError(f"source font lacks required glyphs: {sorted(missing)}")
+    included = requested - missing
     options = subset.Options()
     options.layout_features = ["*"]
     options.name_IDs = ["*"]
     options.recalc_bounds = True
+    options.recalc_timestamp = False
     options.drop_tables = []
     subsetter = subset.Subsetter(options=options)
-    subsetter.populate(text="".join(chars))
+    subsetter.populate(unicodes=sorted(included))
     subsetter.subset(font)
-
-    # Pin the variable weight axis to Regular so the result is a static font.
     if "fvar" in font:
         instantiateVariableFont(font, {"wght": 400}, inplace=True)
+    font.recalcTimestamp = False
+    output = io.BytesIO()
+    font.save(output, reorderTables=True)
+    raw = output.getvalue()
+    decoded = TTFont(io.BytesIO(raw), recalcTimestamp=False)
+    if set(decoded.getBestCmap()) != included or "fvar" in decoded:
+        raise ValueError("generated font failed cmap/static-weight validation")
+    metadata = {
+        "sourceCommit": SOURCE_COMMIT, "sourceUrl": SOURCE_URL, "sourceSha256": SOURCE_SHA256,
+        "licenseUrl": LICENSE_URL, "licenseSha256": LICENSE_SHA256,
+        "fontTools": FONTTOOLS_VERSION, "weight": 400, "glyphCodePoints": len(included),
+        "indexSha256": hashlib.sha256(index).hexdigest(), "datasetSourceSha256": data_manifest["sourceSha256"],
+        "outputSha256": hashlib.sha256(raw).hexdigest(), "outputBytes": len(raw),
+        "fallbackCodePoints": sorted(missing),
+    }
+    notice = f"""# Sample font provenance
 
-    os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
-    font.save(OUTPUT_PATH)
-    size_kb = os.path.getsize(OUTPUT_PATH) / 1024
-    print(f"Wrote {OUTPUT_PATH} ({size_kb:.0f} KB)")
+`noto_sans_sc_subset.ttf` is derived from **Noto Sans SC**, under SIL Open Font
+License 1.1. Copyright 2014–2021 Adobe, with Reserved Font Name “Source”.
+The complete verified upstream license is included in `OFL.txt`.
 
-    write_notice()
-    print(f"Wrote {NOTICE_PATH}")
+- Source: {SOURCE_URL}
+- Pinned commit: `{SOURCE_COMMIT}`
+- Source SHA-256: `{SOURCE_SHA256}`
+- License SHA-256: `{LICENSE_SHA256}`
+- Generator: `tools/subset_font.py`, fontTools `{FONTTOOLS_VERSION}`
+- Output SHA-256: `{metadata['outputSha256']}`
+- Output size: {len(raw):,} bytes; static Regular weight 400
 
+Modifications: subset to the pinned 9,574-character dataset, printable ASCII and
+sample punctuation; instantiate the variable weight axis at 400. Ordering and
+font timestamps are deterministic. The complete requested character set is
+verified against the generated font cmap. This font is packaged only
+by the Wasm Compose sample, and is excluded from native samples, the standalone
+Canvas browser adapter and all published library artifacts.
 
-def write_notice() -> None:
-    content = """# Font notice
-
-`noto_sans_sc_subset.ttf` is a subset of **Noto Sans SC**, licensed under the
-SIL Open Font License, Version 1.1.
-
-- Upstream: https://github.com/google/fonts/tree/main/ofl/notosanssc
-- License: https://scripts.sil.org/OFL
-- Copyright: Copyright 2014-2021 Adobe (http://www.adobe.com/), with Reserved
-  Font Name 'Source'. Noto is a trademark of Google LLC.
-
-This file contains only the glyphs used by the sample application (the bundled
-stroke dataset's characters, ASCII, and a few UI punctuation marks), with the
-variable weight axis pinned to Regular. Regenerate with
-`python3 tools/subset_font.py`.
-
-The font is used only by the `:sample` module and is not part of the published
-`shenzhen-hanzi-animator` library artifact.
+Regenerate with `python3 -m pip install --require-hashes -r tools/font-requirements.txt`
+then `python3 tools/subset_font.py`. Verified local source/license files can be
+supplied with `--source PATH --license PATH` for offline builds.
 """
-    with open(NOTICE_PATH, "w", encoding="utf-8") as f:
-        f.write(content)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="hanzi-font-", dir=args.output.parent) as temporary:
+        stage = Path(temporary) / "font"
+        stage.mkdir()
+        files = {"noto_sans_sc_subset.ttf": raw, "OFL.txt": license_text,
+                 "FONT-NOTICE.md": notice.encode(), "FONT-PROVENANCE.json": (json.dumps(metadata, indent=2) + "\n").encode()}
+        for name, contents in files.items():
+            (stage / name).write_bytes(contents)
+        backup = args.output.with_name(args.output.name + ".previous")
+        if backup.exists():
+            raise RuntimeError(f"recover/remove previous font generation first: {backup}")
+        if args.output.exists():
+            os.replace(args.output, backup)
+        try:
+            os.replace(stage, args.output)
+        except BaseException:
+            if backup.exists():
+                os.replace(backup, args.output)
+            raise
+        if backup.exists():
+            shutil.rmtree(backup)
+    print(json.dumps(metadata, indent=2))
 
 
 if __name__ == "__main__":

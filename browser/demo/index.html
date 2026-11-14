@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hanzi Animator · Canvas</title><link rel="stylesheet" href="./demo/style.css"></head>
+<body><main><header><p class="eyebrow">Hanzi Animator</p><h1>Stroke order &amp; practice</h1><p>Watch the strokes, then draw the character in order.</p></header>
+<form id="character-form"><label for="character">Character</label><div class="input-actions"><input id="character" name="character" value="永" maxlength="8" autocomplete="off" spellcheck="false"><button type="submit">Load character</button></div></form>
+<div class="examples"><button data-character="森">森</button><button data-character="聽">聽</button><button data-character="赢">赢</button><button data-character="龍">龍</button></div>
+<div class="panes"><section><h2>Watch</h2><div id="animation"></div></section><section><h2>Draw</h2><div id="practice"></div></section></div><footer>Component colors follow the character’s structure. Use Outline and Hint while learning.</footer></main>
+<script type="module">
+import {mountHanziPractice, createBinaryStrokeOrderProvider} from './dist/index.js';
+const provider = createBinaryStrokeOrderProvider({baseUrl: './demo/strokes/'});
+const animation = mountHanziPractice(document.getElementById('animation'), {provider});
+const practice = mountHanziPractice(document.getElementById('practice'), {provider});
+let generation = 0;
+async function load(character) { const current = ++generation; await Promise.all([animation.setCharacter(character), practice.setCharacter(character)]); if (current !== generation) return; animation.play(); practice.startQuiz(); }
+document.getElementById('character-form').addEventListener('submit', event => {event.preventDefault(); load(document.getElementById('character').value);});
+for (const button of document.querySelectorAll('[data-character]')) button.addEventListener('click', () => {document.getElementById('character').value = button.dataset.character; load(button.dataset.character);});
+load('永');
+</script></body></html>

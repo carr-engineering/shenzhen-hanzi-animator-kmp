@@ -1,0 +1,33 @@
+{
+  "viewports": [
+    {
+      "bodyScrollWidth": 280,
+      "height": 480,
+      "width": 280
+    },
+    {
+      "bodyScrollWidth": 320,
+      "height": 640,
+      "width": 320
+    },
+    {
+      "bodyScrollWidth": 480,
+      "height": 320,
+      "width": 480
+    },
+    {
+      "bodyScrollWidth": 1440,
+      "height": 900,
+      "width": 1440
+    }
+  ],
+  "glyphLoadVerified": true,
+  "strokeDataRequest": "/strokes/864.hzb HTTP200",
+  "fontRequest": "/composeResources/engineering.carr.hanzianimator.sample.resources/font/noto_sans_sc_subset.ttf HTTP200",
+  "consoleErrors": [],
+  "quizResizePreserved": true,
+  "actualPointerStrokeAccepted": true,
+  "acceptedStrokeResizePreserved": true,
+  "restartClearsFeedback": true,
+  "shortHeightScrollVerified": true
+}

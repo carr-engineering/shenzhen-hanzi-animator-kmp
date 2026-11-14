@@ -1,0 +1,437 @@
+{
+  "measuredAtUtc": "2026-10-12T20:36:17.653657+00:00",
+  "unit": "bytes",
+  "profiles": {
+    "android": {
+      "shardCount": 1,
+      "codec": "gzip",
+      "sourceSha256": "d6db1e36007c41b2d68132975bfc132a64f50b9ceae4254730918ba8ea3d5ced",
+      "encodedBytes": 6865840,
+      "decodedBytes": 8672382,
+      "decodedMedianBytes": 8672382,
+      "generator": {
+        "python": "3.14.7",
+        "zlib": "1.2.12",
+        "node": "v22.19.0"
+      }
+    },
+    "jvm": {
+      "shardCount": 1,
+      "codec": "gzip",
+      "sourceSha256": "d6db1e36007c41b2d68132975bfc132a64f50b9ceae4254730918ba8ea3d5ced",
+      "encodedBytes": 6865840,
+      "decodedBytes": 8672382,
+      "decodedMedianBytes": 8672382,
+      "generator": {
+        "python": "3.14.7",
+        "zlib": "1.2.12",
+        "node": "v22.19.0"
+      }
+    },
+    "ios": {
+      "shardCount": 1,
+      "codec": "brotli",
+      "sourceSha256": "d6db1e36007c41b2d68132975bfc132a64f50b9ceae4254730918ba8ea3d5ced",
+      "encodedBytes": 5825784,
+      "decodedBytes": 8672382,
+      "decodedMedianBytes": 8672382,
+      "generator": {
+        "python": "3.14.7",
+        "zlib": "1.2.12",
+        "node": "v22.19.0"
+      }
+    },
+    "web": {
+      "shardCount": 1024,
+      "codec": "http",
+      "sourceSha256": "d6db1e36007c41b2d68132975bfc132a64f50b9ceae4254730918ba8ea3d5ced",
+      "encodedBytes": 8692842,
+      "decodedBytes": 8692842,
+      "decodedMedianBytes": 8462.0,
+      "generator": {
+        "python": "3.14.7",
+        "zlib": "1.2.12",
+        "node": "v22.19.0"
+      },
+      "sidecars": {
+        "gz": {
+          "totalBytes": 7432757,
+          "medianBytes": 7250.0,
+          "minBytes": 2394,
+          "maxBytes": 13914
+        },
+        "br": {
+          "totalBytes": 7355495,
+          "medianBytes": 7171.5,
+          "minBytes": 2354,
+          "maxBytes": 13725
+        }
+      }
+    }
+  },
+  "canvasJavaScript": {
+    "javascriptBytes": 301198,
+    "gzipBytes": 61378,
+    "budgetBytes": 256000
+  },
+  "sampleFont": {
+    "sourceCommit": "2894aab31764f10f29c421bdfd2340d3b382d384",
+    "sourceUrl": "https://raw.githubusercontent.com/google/fonts/2894aab31764f10f29c421bdfd2340d3b382d384/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf",
+    "sourceSha256": "a3041811a78c361b1de50f953c805e0244951c21c5bd412f7232ef0d899af0da",
+    "licenseUrl": "https://raw.githubusercontent.com/google/fonts/2894aab31764f10f29c421bdfd2340d3b382d384/ofl/notosanssc/OFL.txt",
+    "licenseSha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9",
+    "fontTools": "4.60.1",
+    "weight": 400,
+    "glyphCodePoints": 9677,
+    "indexSha256": "e3d33c511ef4e234395a9881422c86f85ebafd2829cdd9adc4f425710d7f4062",
+    "datasetSourceSha256": "d6db1e36007c41b2d68132975bfc132a64f50b9ceae4254730918ba8ea3d5ced",
+    "outputSha256": "0f97610fcc4bc7b94a4d06d8f5f5e9ce67111317ea4a18d1096b497037c7851e",
+    "outputBytes": 3297592,
+    "fallbackCodePoints": []
+  },
+  "browserLayout": [
+    {
+      "canvasWidths": [
+        248,
+        248
+      ],
+      "inputDirection": "column",
+      "overflowingControls": 0,
+      "paneColumns": "248px",
+      "scrollWidth": 280,
+      "width": 280
+    },
+    {
+      "canvasWidths": [
+        288,
+        288
+      ],
+      "inputDirection": "column",
+      "overflowingControls": 0,
+      "paneColumns": "288px",
+      "scrollWidth": 320,
+      "width": 320
+    },
+    {
+      "canvasWidths": [
+        328,
+        328
+      ],
+      "inputDirection": "column",
+      "overflowingControls": 0,
+      "paneColumns": "328px",
+      "scrollWidth": 360,
+      "width": 360
+    },
+    {
+      "canvasWidths": [
+        358,
+        358
+      ],
+      "inputDirection": "column",
+      "overflowingControls": 0,
+      "paneColumns": "358px",
+      "scrollWidth": 390,
+      "width": 390
+    },
+    {
+      "canvasWidths": [
+        360,
+        360
+      ],
+      "inputDirection": "column",
+      "overflowingControls": 0,
+      "paneColumns": "447px",
+      "scrollWidth": 479,
+      "width": 479
+    },
+    {
+      "canvasWidths": [
+        360,
+        360
+      ],
+      "inputDirection": "row",
+      "overflowingControls": 0,
+      "paneColumns": "448px",
+      "scrollWidth": 480,
+      "width": 480
+    },
+    {
+      "canvasWidths": [
+        360,
+        360
+      ],
+      "inputDirection": "row",
+      "overflowingControls": 0,
+      "paneColumns": "687px",
+      "scrollWidth": 719,
+      "width": 719
+    },
+    {
+      "canvasWidths": [
+        360,
+        360
+      ],
+      "inputDirection": "row",
+      "overflowingControls": 0,
+      "paneColumns": "719px",
+      "scrollWidth": 751,
+      "width": 751
+    },
+    {
+      "canvasWidths": [
+        348,
+        348
+      ],
+      "inputDirection": "row",
+      "overflowingControls": 0,
+      "paneColumns": "348px 348px",
+      "scrollWidth": 752,
+      "width": 752
+    },
+    {
+      "canvasWidths": [
+        360,
+        360
+      ],
+      "inputDirection": "row",
+      "overflowingControls": 0,
+      "paneColumns": "452px 452px",
+      "scrollWidth": 960,
+      "width": 960
+    },
+    {
+      "canvasWidths": [
+        360,
+        360
+      ],
+      "inputDirection": "row",
+      "overflowingControls": 0,
+      "paneColumns": "468px 468px",
+      "scrollWidth": 1440,
+      "width": 1440
+    }
+  ],
+  "limitations": [
+    "Resource sizes exclude runtime and container overhead.",
+    "JavaScript estimate sums per-file gzip9 and excludes demo HTML/CSS, data, source maps and declarations.",
+    "Browser layout evidence checks dimensions/overflow, not physical device touch or accessibility.",
+    "Android artifact is local debug-signed Release APK; AAB container is not Play delivery estimate.",
+    "iOS installed artifact is Debug arm64 simulator; not App Store delivery or installed-on-device estimate.",
+    "Historical sizes describe separate source/configuration revisions and must retain those qualifiers."
+  ],
+  "preRefactorEnrichedJsonGzipBytes": 13046133,
+  "historicalPreComponentJsonGzipBytes": 12850374,
+  "platformArtifacts": {
+    "android": {
+      "apk": {
+        "bytes": 8150994,
+        "expandedEntryBytes": 9201111,
+        "dexBytes": 1999444,
+        "dataset": [
+          {
+            "path": "assets/strokes/all.hzb",
+            "bytes": 6865840,
+            "storedBytes": 6865840,
+            "method": 0
+          }
+        ],
+        "fontFiles": [],
+        "licenseFiles": [
+          "licenses/Arphic-Public-License.txt",
+          "licenses/makemeahanzi-COPYING.txt",
+          "licenses/makemeahanzi-GPL.txt",
+          "licenses/makemeahanzi-LGPL.txt"
+        ]
+      },
+      "aab": {
+        "bytes": 10069669,
+        "expandedEntryBytes": 37032336,
+        "dexBytes": 1999444,
+        "dataset": [
+          {
+            "path": "base/assets/strokes/all.hzb",
+            "bytes": 6865840,
+            "storedBytes": 6867652,
+            "method": 8
+          }
+        ],
+        "fontFiles": [],
+        "licenseFiles": [
+          "base/root/licenses/Arphic-Public-License.txt",
+          "base/root/licenses/makemeahanzi-COPYING.txt",
+          "base/root/licenses/makemeahanzi-GPL.txt",
+          "base/root/licenses/makemeahanzi-LGPL.txt"
+        ]
+      }
+    },
+    "composeWeb": {
+      "runtime": [
+        {
+          "path": "index.html",
+          "bytes": 937,
+          "gzipBytes": 504
+        },
+        {
+          "path": "styles.css",
+          "bytes": 102,
+          "gzipBytes": 96
+        },
+        {
+          "path": "6e23e5428398b92da386.wasm",
+          "bytes": 8652729,
+          "gzipBytes": 3319858
+        },
+        {
+          "path": "a84308ab986d6264be87.wasm",
+          "bytes": 3435154,
+          "gzipBytes": 1005710
+        },
+        {
+          "path": "sample.js",
+          "bytes": 534565,
+          "gzipBytes": 100283
+        },
+        {
+          "path": "composeResources/engineering.carr.hanzianimator.sample.resources/font/noto_sans_sc_subset.ttf",
+          "bytes": 3297592,
+          "gzipBytes": 2044361
+        }
+      ],
+      "rawRuntimeAndFontBytes": 15921079,
+      "gzipRuntimeAndFontBytes": 6470812,
+      "staleJsonDataFiles": []
+    },
+    "note": "Local release APK uses debug signing; sizes are local artifacts, not Play/App Store delivery estimates."
+  },
+  "iosInstalledSmoke": {
+    "configuration": "Debug, arm64 iOS Simulator",
+    "minimumIOS": "15.0",
+    "testedSimulator": "iPhone 16e / iOS 26.0",
+    "installedSmokeResult": "PASS: 9574 characters; \u6c38 practice; \u68ee repeated component membership; native Brotli bundle",
+    "appFileBytes": 56377957,
+    "datasetBytes": 5825784,
+    "licenseFiles": [
+      "Arphic-Public-License.txt",
+      "makemeahanzi-GPL.txt",
+      "makemeahanzi-COPYING.txt",
+      "makemeahanzi-LGPL.txt"
+    ],
+    "machoFiles": {
+      "__preview.dylib": 16768,
+      "HanziAnimatorExample.debug.dylib": 50366496,
+      "HanziAnimatorExample": 39656
+    },
+    "isAppStoreDownloadEstimate": false
+  },
+  "iosRelease": {
+    "configuration": "Release; unsigned physical iOS arm64 build",
+    "minimumIOS": "15.0",
+    "sdk": "iOS 26.0 / Xcode 26.0.1",
+    "architecture": "Mach-O 64-bit executable arm64; LC_BUILD_VERSION platform iOS minos15.0 sdk26.0",
+    "baseGitRevision": "145e4d682665c2665936aa5bcc979fa390c8d2bd",
+    "workingTreeChangesIncluded": true,
+    "versions": {
+      "kotlin": "2.4.10",
+      "composeMultiplatform": "1.11.1",
+      "agp": "9.0.1",
+      "kotlinx-coroutines": "1.11.0"
+    },
+    "libraryVersion": "0.1.0",
+    "appFileBytes": 39942577,
+    "executableBytes": 33987520,
+    "nativeTextSectionBytes": 22560768,
+    "nativeDataSectionBytes": 344064,
+    "datasetBytes": 5825784,
+    "datasetCanonicalSourceSha256": "d6db1e36007c41b2d68132975bfc132a64f50b9ceae4254730918ba8ea3d5ced",
+    "datasetCharacterCount": 9574,
+    "dataCodec": "Apple system Brotli (iOS15+)",
+    "licenseFiles": [
+      "Arphic-Public-License.txt",
+      "makemeahanzi-GPL.txt",
+      "makemeahanzi-COPYING.txt",
+      "makemeahanzi-LGPL.txt"
+    ],
+    "largestFiles": {
+      "HanziAnimatorExample": 33987520,
+      "strokes/all.hzb": 5825784,
+      "licenses/makemeahanzi-GPL.txt": 35149,
+      "compose-resources/composeResources/engineering.carr.library.generated.resources/files/licenses/makemeahanzi-GPL.txt": 35149,
+      "strokes/index.txt": 28722,
+      "licenses/makemeahanzi-LGPL.txt": 9767
+    },
+    "isAppStoreDownloadEstimate": false,
+    "notes": [
+      "Unsigned Release application built for physical iOS arm64; no simulator/device installation or publication.",
+      "Building rather than archiving can retain symbols; App Store signing, encryption, thinning and archive stripping are unmeasured.",
+      "Size includes the complete shared Compose sample and full dataset; it is not the incremental library cost in an app already using Compose."
+    ],
+    "symbolStrippingExperiment": {
+      "command": "xcrun strip -S -x -o <build-copy> <release-executable>",
+      "strippedExecutableBytes": 25392056,
+      "savedExecutableBytes": 8595464,
+      "projectedAppFileBytesWithStrippedExecutable": 31347113,
+      "verification": "Mach-O arm64 retained; not installed or executed on a physical device; original release app unchanged"
+    },
+    "finalCallbackAndLayoutChangesIncluded": true,
+    "executableSha256": "0ed8e3131557daa61907a5a2441547771776110ae06230cfa8bdfd989afe4d27"
+  },
+  "composeLayout": {
+    "viewports": [
+      {
+        "bodyScrollWidth": 280,
+        "height": 480,
+        "width": 280
+      },
+      {
+        "bodyScrollWidth": 320,
+        "height": 640,
+        "width": 320
+      },
+      {
+        "bodyScrollWidth": 480,
+        "height": 320,
+        "width": 480
+      },
+      {
+        "bodyScrollWidth": 1440,
+        "height": 900,
+        "width": 1440
+      }
+    ],
+    "glyphLoadVerified": true,
+    "strokeDataRequest": "/strokes/864.hzb HTTP200",
+    "fontRequest": "/composeResources/engineering.carr.hanzianimator.sample.resources/font/noto_sans_sc_subset.ttf HTTP200",
+    "consoleErrors": [],
+    "quizResizePreserved": true,
+    "actualPointerStrokeAccepted": true,
+    "acceptedStrokeResizePreserved": true,
+    "restartClearsFeedback": true,
+    "shortHeightScrollVerified": true
+  },
+  "browserPackage": {
+    "javascriptBytes": 301198,
+    "gzipBytes": 61378,
+    "budgetBytes": 256000,
+    "javascriptMeasurement": "Sum of deployed ES-module file bytes and per-file gzip level9 sizes; excludes data, TypeScript declarations and docs",
+    "testsPassed": 12,
+    "corpusCharactersVerified": 9574,
+    "runtimeDependencies": "Generated Kotlin stdlib/core/codec plus DOM/Canvas adapter; no Compose, Skiko, Wasm, HTTP client, frontend framework or font",
+    "privateModelSerializable": false,
+    "publicOrderJsonRoundtripVerified": true,
+    "completionSummarySurvivesCallbackReset": true,
+    "strictIntegerCommandAndComponentIndexesVerified": true,
+    "npmTarballBytes": 64498,
+    "npmUnpackedBytes": 317378
+  },
+  "validation": {
+    "jvmTests": 67,
+    "nativeCoreCodecJsonDataBundledTests": 38,
+    "browserTests": 12,
+    "pythonGeneratorTests": 5,
+    "isolatedPublishedConsumerTests": 5,
+    "fullCorpusCharacterParity": 9574,
+    "androidR8Version": "9.1.56"
+  },
+  "updatedAtUtc": "2026-10-12T21:33:28.104109+00:00"
+}

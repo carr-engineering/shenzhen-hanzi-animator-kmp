@@ -1,0 +1,55 @@
+shenzhen-hanzi-animator
+Copyright (c) 2026 Marcus Carr
+
+Kotlin and TypeScript implementation: MIT License (LICENSE).
+The bundled data and sample font have separate licenses described below.
+
+BUNDLED GLYPH DATA — ARPHIC PUBLIC LICENSE
+
+Glyph outlines, stroke order and medians come from chanind/hanzi-writer-data,
+commit 68d10a4b21150cae5e1ebbd223eed289cf32d90c, data/all.json.
+https://github.com/chanind/hanzi-writer-data
+The pinned glyph corpus is under the Arphic Public License, not the MIT license
+of the separate Hanzi Writer application. It derives from Make Me a Hanzi and
+Arphic PL fonts, Copyright (C) 1999 Arphic Technology Co., Ltd.
+https://github.com/skishore/makemeahanzi
+
+COMPONENT METADATA — LGPL-3.0-OR-LATER
+
+Occurrence labels and stroke membership come from Make Me a Hanzi dictionary.txt,
+decomposition and matches fields, commit 618dbab8a8ddefb958763c8b4afbaa741a4460de.
+The dictionary derives from Unihan and CJKlib. The upstream COPYING and complete
+LGPL/GPL texts, including the upstream Unicode notice, are preserved.
+
+Modifications include occurrence extraction, indexed component membership,
+lossless HZB1 command/median encoding, indexes and platform compression/sharding.
+Stroke geometry/order, radical flags, repeated components and unmapped strokes
+are preserved. The complete enriched source is tools/fixtures/source-data.json.gz;
+tools/fixtures/source-manifest.json records the original source hashes.
+See tools/DATA_PROVENANCE.md and tools/generate_stroke_data.py for reproduction.
+
+Full notices accompany bundled-data resources in:
+  bundled-data/src/commonMain/resources/licenses/Arphic-Public-License.txt
+  bundled-data/src/commonMain/resources/licenses/makemeahanzi-COPYING.txt
+  bundled-data/src/commonMain/resources/licenses/makemeahanzi-LGPL.txt
+  bundled-data/src/commonMain/resources/licenses/makemeahanzi-GPL.txt
+Copies are retained in docs/licenses/. Preserve these with redistributed data,
+including separately hosted browser shards and iOS application resources.
+
+SAMPLE FONT — SIL OPEN FONT LICENSE 1.1
+
+The Compose Wasm sample includes a subset of Noto Sans SC from google/fonts.
+Copyright 2014-2021 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'.
+Noto is a trademark of Google LLC.
+https://github.com/google/fonts/tree/main/ofl/notosanssc
+The subset retains dataset characters, ASCII and sample punctuation and pins
+the variable weight axis to Regular. The font is only in :sample's Wasm resources,
+not the published library or Canvas package. See the adjacent FONT-NOTICE.md
+and docs/THIRD_PARTY.md for the source/provenance record and full license location.
+
+DESIGN REFERENCES
+
+Hanzi Writer (MIT application) established the clipped median reveal and guided
+quiz conventions. https://github.com/chanind/hanzi-writer
+stroke_order_animator (BSD-3-Clause) was a conceptual controller API reference;
+no code was copied. https://pub.dev/packages/stroke_order_animator

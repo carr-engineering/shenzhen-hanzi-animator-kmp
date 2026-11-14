@@ -5,6 +5,7 @@ import engineering.carr.hanzianimator.core.GlyphPoint
 import engineering.carr.hanzianimator.core.Stroke
 import engineering.carr.hanzianimator.core.StrokeAnimationConfig
 import engineering.carr.hanzianimator.core.StrokeOrder
+import engineering.carr.hanzianimator.core.StrokeRecognitionStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -105,6 +106,23 @@ class StrokeOrderControllerTest {
     }
 
     @Test
+    fun strayTapDoesNotCountAsMistake() = runTest {
+        val scope = CoroutineScope(StandardTestDispatcher(testScheduler))
+        val controller = StrokeOrderController(twoStrokeOrder(), hintAfterMistakes = 1, scope = scope)
+        controller.startQuiz()
+
+        // A tap yields (after deduplication) fewer than two distinct points.
+        val tap = controller.submitStroke(listOf(GlyphPoint(100f, 100f), GlyphPoint(100.5f, 100f)))
+        assertEquals(StrokeRecognitionStatus.EmptyInput, tap.status)
+        assertEquals(0, controller.mistakesOnCurrentStroke)
+        assertEquals(0, controller.totalMistakes)
+        assertFalse(controller.hintVisible)
+        assertEquals(StrokeRecognitionStatus.EmptyInput, controller.lastRecognitionStatus)
+
+        scope.cancel()
+    }
+
+    @Test
     fun swappingStrokeOrderResetsState() = runTest {
         val scope = CoroutineScope(StandardTestDispatcher(testScheduler))
         val controller = StrokeOrderController(twoStrokeOrder(), scope = scope)
@@ -145,8 +163,8 @@ private fun twoStrokeOrder(): StrokeOrder =
     StrokeOrder(
         character = "X",
         strokes = listOf(
-            Stroke(0, "M 0 0 L 200 0", listOf(GlyphPoint(0f, 0f), GlyphPoint(200f, 0f)), isRadical = false),
-            Stroke(1, "M 0 300 L 200 300", listOf(GlyphPoint(0f, 300f), GlyphPoint(200f, 300f)), isRadical = false)
+            Stroke(0, engineering.carr.hanzianimator.core.StrokeOutline.Builder().moveTo(0f, 0f).lineTo(200f, 0f).build(), listOf(GlyphPoint(0f, 0f), GlyphPoint(200f, 0f)), isRadical = false),
+            Stroke(1, engineering.carr.hanzianimator.core.StrokeOutline.Builder().moveTo(0f, 300f).lineTo(200f, 300f).build(), listOf(GlyphPoint(0f, 300f), GlyphPoint(200f, 300f)), isRadical = false)
         )
     )
 
@@ -154,6 +172,6 @@ private fun oneStrokeOrder(): StrokeOrder =
     StrokeOrder(
         character = "Y",
         strokes = listOf(
-            Stroke(0, "M 0 0 L 200 0", listOf(GlyphPoint(0f, 0f), GlyphPoint(200f, 0f)), isRadical = false)
+            Stroke(0, engineering.carr.hanzianimator.core.StrokeOutline.Builder().moveTo(0f, 0f).lineTo(200f, 0f).build(), listOf(GlyphPoint(0f, 0f), GlyphPoint(200f, 0f)), isRadical = false)
         )
     )

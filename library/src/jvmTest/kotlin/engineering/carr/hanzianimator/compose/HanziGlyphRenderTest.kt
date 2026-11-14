@@ -15,7 +15,7 @@ import kotlin.test.assertTrue
 class HanziGlyphRenderTest {
     @Test
     fun rendersZhongAsCenteredInk() {
-        val order = runBlocking { BundledStrokeOrderProvider().strokeOrder("中") }
+        val order = runBlocking { BundledStrokeOrderProvider(this).strokeOrder("中") }
         requireNotNull(order) { "中 should be in the bundled dataset" }
 
         val size = 256

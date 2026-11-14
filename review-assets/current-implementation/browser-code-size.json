@@ -1,0 +1,13 @@
+{
+  "javascriptBytes": 301198,
+  "gzipBytes": 61378,
+  "budgetBytes": 256000,
+  "javascriptMeasurement": "Sum of deployed ES-module file bytes and per-file gzip level9 sizes; excludes data, TypeScript declarations and docs",
+  "testsPassed": 12,
+  "corpusCharactersVerified": 9574,
+  "runtimeDependencies": "Generated Kotlin stdlib/core/codec plus DOM/Canvas adapter; no Compose, Skiko, Wasm, HTTP client, frontend framework or font",
+  "privateModelSerializable": false,
+  "publicOrderJsonRoundtripVerified": true,
+  "completionSummarySurvivesCallbackReset": true,
+  "strictIntegerCommandAndComponentIndexesVerified": true
+}

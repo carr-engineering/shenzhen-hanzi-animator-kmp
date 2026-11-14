@@ -1,176 +1,168 @@
 # shenzhen-hanzi-animator
 
-A Kotlin Multiplatform library that animates hanzi (Chinese character) stroke
-order and quizzes users on drawing them, for **Compose Multiplatform**. The full
-[Hanzi Writer](https://hanziwriter.org/) dataset — **9,574 characters** — is
-bundled, so there is nothing to download at runtime on native and desktop, and
-only the characters actually used are fetched on web.
+Hanzi stroke animation and guided practice for Kotlin Multiplatform and browser
+Canvas. The headless engine, Compose adapter, JSON importer and bundled dataset
+are separate dependencies. The pinned dataset contains **9,574 characters**.
 
-> Replace `OWNER` throughout this README (and in `library/build.gradle.kts`) with
-> your GitHub org/user before publishing.
+This repository is preparing version **0.1.0**. Coordinates below describe the
+publication configuration; availability on Maven Central/npm is not implied.
+See [validation and release steps](docs/RELEASING.md) for the checks required
+before publishing. This refactor intentionally breaks the previous API; use the
+[migration guide](docs/MIGRATION.md).
 
-## Features
+## Choose your dependencies
 
-- 🖌️ **Stroke-order animation** — clipped reveal along each stroke's median, with
-  configurable timing and looping.
-- ✍️ **Guided quizzing** — trace strokes in order with rotation-robust
-  recognition, mistake tracking, and hints.
-- 📦 **9,574 characters bundled** — gzip-compressed JSON shards; lazy per-shard
-  fetch on web, zero runtime downloads elsewhere.
-- 🎨 **Compose-native** — a `@Stable` controller backed by snapshot state; frame
-  updates repaint without recomposing.
-- 🧩 **Layered API** — drop-in composables, or building blocks you wire yourself,
-  or just the pure core (parser, animation, recognizer) with your own data.
+All Maven artifacts use `engineering.carr` and version `0.1.0`. Add dependencies
+to `commonMain`; Gradle selects Android, JVM, iOS ARM64/simulator ARM64, JS or
+Wasm variants.
 
-### Supported targets
+| Artifact suffix (`shenzhen-hanzi-animator-…`) | Purpose and runtime dependencies |
+| --- | --- |
+| `core` | Immutable glyph geometry, animation, recognition and `StrokeSession`; Kotlin stdlib only |
+| `codec` | Validated indexed HZB1 decoder; core and stdlib only |
+| `json` | Optional Hanzi Writer JSON importer; core and kotlinx.serialization |
+| `data` | Application-supplied decoded byte source, bounded caches and concurrent loading; core, codec and coroutines |
+| `bundled-data` | Dataset and native/browser resource readers; data module |
+| `compose` | Canvas, controller, Foundation controls and composables; core, Compose UI/runtime/Foundation and coroutines |
+| `material3` | Optional Material color adapter and controls; Compose module and Material 3 |
 
-| Target | Artifact |
-|--------|----------|
-| Android | `shenzhen-hanzi-animator-android` |
-| JVM (desktop) | `shenzhen-hanzi-animator-jvm` |
-| iOS (`iosArm64`, `iosSimulatorArm64`) | `shenzhen-hanzi-animator-iosarm64`, … |
-| JS (browser) | `shenzhen-hanzi-animator-js` |
-| Wasm (browser) | `shenzhen-hanzi-animator-wasm-js` |
-
-## Installation
+The Compose artifact does not include a dataset, HTTP client, Material, generated
+Compose resources or a font. Android requires API 24+. The default bundled iOS
+Brotli reader requires iOS 15+ and Apple's system Compression framework.
+The tested compiler is Kotlin 2.4.10. Android consumers need a compatible D8/R8;
+see [the verified toolchain requirements](docs/r8-toolchain.md).
 
 ```kotlin
-// build.gradle.kts
-kotlin {
-    sourceSets {
-        commonMain.dependencies {
-            implementation("engineering.carr:shenzhen-hanzi-animator:0.1.0")
-        }
-    }
+commonMain.dependencies {
+    implementation("engineering.carr:shenzhen-hanzi-animator-compose:0.1.0")
+    implementation("engineering.carr:shenzhen-hanzi-animator-bundled-data:0.1.0")
+    // Optional: shenzhen-hanzi-animator-material3 or shenzhen-hanzi-animator-json
 }
 ```
 
-## Quick start — animate a character
+## Compose example
 
-The zero-wiring entry point loads the bundled data and autoplays:
+Create one provider using an application-owned `CoroutineScope`, then pass it to
+your screen. Cancel that scope when its owning application/service shuts down.
+Use a `SupervisorJob` when unrelated requests should fail independently.
 
 ```kotlin
-import engineering.carr.hanzianimator.compose.HanziStrokeAnimation
-
-@Composable
-fun Demo() {
-    HanziStrokeAnimation("你", modifier = Modifier.size(240.dp))
-}
+val dataScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+val provider = BundledStrokeOrderProvider(dataScope) // JVM/iOS/browser
 ```
 
-## Full experience — animation + quizzing
-
-Wire the building blocks yourself for complete control:
+On Android, supply the application AssetManager explicitly:
 
 ```kotlin
-import engineering.carr.hanzianimator.compose.*
-import engineering.carr.hanzianimator.core.StrokeOrder
-import engineering.carr.hanzianimator.data.BundledStrokeOrderProvider
-
-@Composable
-fun Practice(character: String) {
-    val provider = remember { BundledStrokeOrderProvider.Default }
-    val order by produceState<StrokeOrder?>(null, character) {
-        value = provider.strokeOrder(character)
-    }
-    order?.let { strokeOrder ->
-        val controller = rememberStrokeOrderController(strokeOrder)
-        Column {
-            StrokeOrderCanvas(
-                controller = controller,
-                modifier = Modifier.fillMaxWidth().aspectRatio(1f),
-                onStrokeResult = { result -> /* map result.status to your own copy */ },
-                onQuizComplete = { summary -> /* summary.totalMistakes, mistakesPerStroke */ },
-            )
-            StrokeOrderControls(controller)
-        }
-    }
-}
-```
-
-### Styling
-
-`StrokeOrderStyle` is immutable; `StrokeOrderDefaults.style()` resolves colours
-from the current `MaterialTheme`, and you override only what you want:
-
-```kotlin
-val style = StrokeOrderDefaults.style(
-    radicalStrokeColor = Color(0xFFA53A2B),
-    showGrid = false,
+val provider = BundledStrokeOrderProvider(
+    scope = dataScope,
+    source = androidBundledDataSource(applicationContext.assets),
 )
-StrokeOrderCanvas(controller, style = style)
 ```
-
-The library reports quiz outcomes as a `StrokeRecognitionStatus`; **feedback text
-is your responsibility** (no user-facing strings are baked in), so you can
-localize freely.
-
-## Building blocks
-
-| Piece | What it does |
-|-------|--------------|
-| `rememberStrokeOrderController(order)` | Creates the controller (frame loop, quiz state). |
-| `controller.play()/pause()/stop()` | Animation playback. |
-| `controller.nextStroke()/previousStroke()/showFullCharacter()` | Static stepping. |
-| `controller.startQuiz()/submitStroke(points)/showHint()/stopQuiz()` | Quizzing. |
-| `controller.quizSummary()` | Mistake tally once complete. |
-| `StrokeOrderCanvas` | Renders the controller + captures quiz strokes. |
-| `StrokeOrderControls` | Ready-made Material 3 control bar. |
-| `HanziGlyph(order, visibleStrokes = n)` | Stateless static render. |
-| `HanziStrokeAnimation(char)` / `HanziStrokePractice(char)` | Opinionated drop-ins. |
-
-### Bring your own data
-
-`StrokeOrder.parse(character, hanziWriterJson)` parses a single Hanzi Writer
-entry, and `StrokeOrderProvider` is a one-method interface you can implement to
-source data however you like:
 
 ```kotlin
-val order = StrokeOrder.parse("中", myJson)
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import engineering.carr.hanzianimator.compose.HanziStrokePractice
+import engineering.carr.hanzianimator.data.StrokeOrderProvider
+
+@Composable
+fun Practice(provider: StrokeOrderProvider) {
+    HanziStrokePractice(
+        character = "永",
+        provider = provider,
+        modifier = Modifier,
+        onQuizComplete = { summary -> println(summary.totalMistakes) },
+        // Supply loading, missing and error slots for your application's UI.
+    )
+}
 ```
 
-The pure core (`StrokeOrder`, `StrokeAnimationPlanner`, `StrokeRecognizer`) has no
-Compose dependency and can be used headlessly.
+`HanziStrokeAnimation` uses the same explicit provider. For custom screens, load
+an order and use `rememberStrokeOrderController`, `StrokeOrderCanvas`,
+`StrokeOrderControls` or the stateless `HanziGlyph`. Load errors and unavailable
+characters are distinct states; error slots receive a retry callback.
 
-## Data notes
+`StrokeOrderDefaults.style()` is Material independent. The optional
+`MaterialStrokeOrderDefaults.style()` derives colors from `MaterialTheme`.
+Component colors identify occurrences in decomposition-tree order, including
+repeated labels. Unmapped strokes stay neutral; an empty palette restores radical
+coloring. Six distinct colors cover the bundled component metadata. Feedback
+messages and accessibility labels can be localized by the host.
 
-The dataset lives in `library/src/commonMain/composeResources/files/strokes/` as
-256 gzip shards keyed by `codePoint % 256`, plus a character index. On web,
-`BundledStrokeOrderProvider` fetches only the shards you touch (via
-`DecompressionStream`), so the ~12 MB costs web users nothing up front.
+## Headless and custom data
 
-Regenerate from upstream (pinned commit) with:
+`StrokeOrder`, `StrokeOutline` and `GlyphPoint` contain render-ready geometry in
+a 1,024-unit square with a top-left origin and downward Y. Input collections and
+outline arrays are defensively copied. A `StrokeSession` owns playback and quiz
+state without Compose; the host supplies elapsed milliseconds and redraws after
+mutations. Import older JSON with the optional
+`StrokeOrderJson.parse(character, json)`; do not flip imported coordinates again.
 
+Use `BinaryStrokeOrderProvider(source, scope, cacheConfig, shardCount)` with your
+application's assets or network client. `StrokeDataSource.read` must return
+**decoded HZB1 bytes**, not gzip/Brotli bytes. Missing glyphs return `null`; source
+failures throw. Details and cache/lifetime examples are in
+[the migration guide](docs/MIGRATION.md).
+
+## Browser Canvas
+
+The standalone [`browser`](browser/README.md) adapter shares the Kotlin engine
+and exports an ES module with TypeScript declarations. It has no Compose,
+Skiko, Wasm, font or framework runtime. The dataset is separately deployed.
+
+```ts
+import {mountHanziPractice} from '@hanzi-animator/canvas';
+const practice = mountHanziPractice(document.querySelector('#practice')!, {
+  character: '永', data: {baseUrl: '/strokes/'},
+  onComplete: summary => console.log(summary.totalMistakes)
+});
+// Call practice.dispose() when removing the component.
 ```
-python3 tools/generate_stroke_data.py
+
+Fetch `.hzb` URLs and let the web server negotiate their `.gz`/`.br` sidecars
+using `Content-Encoding` and `Vary: Accept-Encoding`. The browser exposes decoded
+bytes. Raw `.hzb` files also work without server compression. Typical compressed
+web blocks are about 7 KB; no full native archive is fetched by default.
+
+## Samples and validation
+
+The bundled stroke packs are generated, not committed. Prepare them once after cloning
+(Python 3.14 and Node 22; see [data provenance](tools/DATA_PROVENANCE.md)):
+
+```sh
+tools/prepare_bundled_data.sh
 ```
 
-See [`tools/DATA_PROVENANCE.md`](tools/DATA_PROVENANCE.md) for the exact source
-and commit.
-
-## Running the sample
-
-```
-./gradlew :sample:run                          # desktop
-./gradlew :sample:wasmJsBrowserDevelopmentRun  # web (Chrome / Safari 16.4+)
+```sh
+./gradlew :sample:run                           # desktop
+./gradlew :androidApp:assembleRelease           # Android sample APK
+./gradlew :sample:wasmJsBrowserDevelopmentRun    # Compose web sample
+./gradlew :browser-engine:jsBrowserProductionLibraryDistribution
+cd browser && npm ci && npm run build && npm test && npm run demo
 ```
 
-The sample shows single-character input with validation, a random button,
-side-by-side animate/practice panes, an outline toggle, quizzing with feedback,
-and a light/dark theme toggle — laid out responsively.
+[`iosApp`](iosApp/README.md) embeds the sample framework and copies the iOS dataset
+into the application bundle. Native resources are described in
+[migration](docs/MIGRATION.md); they are not generated Compose resources.
 
-## Attribution & licenses
+See [measured sizes and layout](docs/MEASUREMENTS.md),
+[data provenance](tools/DATA_PROVENANCE.md), [binary format](tools/BINARY_FORMAT.md),
+and [isolated publication consumer](integration-smoke/README.md). `PLAN.md` and
+`review-assets/` record earlier design work and are historical; current code and
+these module documents describe the refactor.
 
-This library is MIT-licensed (see [`LICENSE`](LICENSE)). It bundles and builds on:
+## Attribution and distribution
 
-- **[Hanzi Writer](https://hanziwriter.org/)** — MIT. Data format and
-  clipped-reveal / guided-quiz conventions.
-- **[hanzi-writer-data](https://github.com/chanind/hanzi-writer-data)** — MIT;
-  underlying glyph data from
-  **[Make Me a Hanzi](https://github.com/skishore/makemeahanzi)** (Arphic Public
-  License).
-- **[stroke_order_animator](https://pub.dev/packages/stroke_order_animator)** —
-  BSD-3-Clause; a conceptual reference for the controller API (no code copied).
+The Kotlin/TypeScript code is [MIT licensed](LICENSE). **The bundled glyph data
+is Arphic Public License data**, including the pinned hanzi-writer-data corpus;
+the Hanzi Writer application being MIT does not relicense those glyphs. Component
+metadata derives from Make Me a Hanzi under LGPL-3.0-or-later. Complete Arphic,
+LGPL, GPL and upstream COPYING notices accompany the data and are available in
+[docs/licenses](docs/licenses). The enriched source corpus, pinned revisions,
+hashes and regeneration tools are retained in `tools/`.
 
-The sample bundles a subset of **Noto Sans SC** (SIL Open Font License 1.1); see
-its `FONT-NOTICE.md`. Full details are in [`NOTICE`](NOTICE).
+The Compose web sample alone includes a subset of Noto Sans SC under SIL OFL 1.1;
+it is not a dependency of the published library or Canvas adapter. See
+[NOTICE](NOTICE) and the [third-party record](docs/THIRD_PARTY.md) for provenance,
+modifications and license locations.

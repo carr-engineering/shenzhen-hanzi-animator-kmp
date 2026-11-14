@@ -17,3 +17,13 @@ captures
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 node_modules/
+__pycache__/
+*.pyc
+
+# Generated stroke packs and their downloaded source corpus (tools/prepare_bundled_data.sh)
+bundled-data/src/androidMain/resources/strokes/
+bundled-data/src/jvmMain/resources/strokes/
+bundled-data/src/iosMain/resources/strokes/
+bundled-data/src/webMain/resources/strokes/
+bundled-data/src/generation-summary.json
+tools/fixtures/source-data.json.gz
